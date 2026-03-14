@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>今日 SOP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0e0c;
+    --surface: #1a1916;
+    --surface2: #222118;
+    --border: #2e2c26;
+    --text: #e8e4d9;
+    --muted: #6b6860;
+    --amber: #d4a843;
+    --amber-dim: #7a5e1e;
+    --teal: #4aada0;
+    --coral: #d4695a;
+    --green: #6aaa6a;
+    --blue: #6b9fd4;
+    --purple: #9b7fd4;
+    --done-bg: #1e2b1e;
+    --done-border: #3a5a3a;
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Serif SC', serif;
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  /* Header */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px 12px;
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .header h1 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--amber);
+  }
+
+  .header .date {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  .reset-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Noto Serif SC', serif;
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .reset-btn:active { background: var(--border); }
+
+  /* Progress bar */
+  .progress-wrap {
+    margin-top: 12px;
+  }
+
+  .progress-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .progress-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .progress-count {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--amber);
+  }
+
+  .progress-track {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--amber-dim), var(--amber));
+    border-radius: 2px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* Streak */
+  .streak-row {
+    display: flex;
+    gap: 6px;
+    padding: 14px 20px 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .streak-row::-webkit-scrollbar { display: none; }
+
+  .streak-day {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .streak-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all 0.3s;
+  }
+
+  .streak-dot.full { background: var(--amber); border-color: var(--amber); }
+  .streak-dot.partial { background: var(--amber-dim); border-color: var(--amber-dim); }
+  .streak-dot.today { border-color: var(--amber); border-width: 2px; }
+
+  .streak-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+  }
+
+  /* Block sections */
+  .block {
+    margin: 16px 16px 0;
+  }
+
+  .block-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    padding: 0 4px;
+  }
+
+  .block-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .block-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .block-time {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-left: auto;
+  }
+
+  /* Task cards */
+  .task {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(.4,0,.2,1);
+    user-select: none;
+    -webkit-user-select: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .task::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    border-radius: 3px 0 0 3px;
+    background: var(--task-color, var(--border));
+    transition: background 0.3s;
+  }
+
+  .task:active { transform: scale(0.98); }
+
+  .task.done {
+    background: var(--done-bg);
+    border-color: var(--done-border);
+    opacity: 0.7;
+  }
+
+  .task.done::before { background: var(--green); }
+
+  .check {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(.4,0,.2,1);
+    background: var(--surface2);
+  }
+
+  .task.done .check {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .check svg {
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.25s cubic-bezier(.4,0,.2,1);
+  }
+
+  .task.done .check svg {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .task-content { flex: 1; min-width: 0; }
+
+  .task-name {
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--text);
+    transition: color 0.3s;
+  }
+
+  .task.done .task-name {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-color: var(--done-border);
+  }
+
+  .task-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  .task-time {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .task.done .task-time { opacity: 0.5; }
+
+  /* Note for alternating tasks */
+  .task-note {
+    background: var(--surface2);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Celebration overlay */
+  .celebrate {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,14,12,0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s;
+  }
+
+  .celebrate.show {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .celebrate-emoji {
+    font-size: 72px;
+    animation: bounce 0.6s ease infinite alternate;
+  }
+
+  .celebrate-text {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--amber);
+    margin-top: 20px;
+  }
+
+  .celebrate-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  .celebrate-close {
+    margin-top: 32px;
+    background: var(--amber);
+    color: var(--bg);
+    border: none;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 12px 32px;
+    border-radius: 30px;
+    cursor: pointer;
+  }
+
+  @keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-12px); }
+  }
+
+  @keyframes pop {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+  }
+
+  .task.just-done { animation: pop 0.3s ease; }
+
+  /* Confetti particles */
+  .particle {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 998;
+    animation: fall 1.2s ease forwards;
+  }
+
+  @keyframes fall {
+    0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+    100% { opacity: 0; transform: translateY(200px) rotate(360deg); }
+  }
+
+  /* Divider */
+  .section-gap { height: 4px; }
+
+  /* All done banner */
+  .all-done-banner {
+    margin: 16px;
+    background: linear-gradient(135deg, #1a2a1a, #1e2e1e);
+    border: 1px solid var(--done-border);
+    border-radius: var(--radius);
+    padding: 16px;
+    text-align: center;
+    display: none;
+  }
+
+  .all-done-banner.show { display: block; }
+
+  .all-done-banner .emoji { font-size: 32px; }
+  .all-done-banner p {
+    color: var(--green);
+    font-size: 15px;
+    margin-top: 8px;
+  }
+  .all-done-banner small {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    display: block;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>今日 SOP</h1>
+      <div class="date" id="dateStr"></div>
+    </div>
+    <button class="reset-btn" onclick="resetDay()">重置今天</button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-row">
+      <span class="progress-label">今日进度</span>
+      <span class="progress-count" id="progressCount">0 / 0</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </div>
+</div>
+
+<div class="streak-row" id="streakRow"></div>
+
+<div id="appContent"></div>
+
+<div class="celebrate" id="celebrate">
+  <div class="celebrate-emoji">🎉</div>
+  <div class="celebrate-text">今天全部完成！</div>
+  <div class="celebrate-sub" id="celebrateSub"></div>
+  <button class="celebrate-close" onclick="document.getElementById('celebrate').classList.remove('show')">太好了！</button>
+</div>
+
+<script>
+const TASKS = [
+  // 早晨
+  { id:'wake',    block:'morning', name:'起床 · 洗漱',    time:'08:00',       color:'#d4a843', sub:'' },
+  { id:'cat',     block:'morning', name:'给猫喂药',        time:'08:05',       color:'#d4a843', sub:'趁猫饿着最配合 🐱' },
+  { id:'bfast',   block:'morning', name:'做早饭 + 吃早饭', time:'08:10–08:30', color:'#4aada0', sub:'' },
+  { id:'toilet',  block:'morning', name:'拉屎 · 整理仪容', time:'08:30–08:50', color:'#6b6860', sub:'' },
+  { id:'vacuum',  block:'morning', name:'吸地',            time:'08:50–09:10', color:'#4aada0', sub:'每天必做', alternate: false },
+  { id:'mop',     block:'morning', name:'拖地',            time:'09:10–09:20', color:'#4aada0', sub:'隔天做', alternate: true },
+  { id:'tidy',    block:'morning', name:'整理房间 · 准备工作', time:'09:20–09:30', color:'#6b6860', sub:'' },
+
+  // 上午工作
+  { id:'work1',   block:'work_am', name:'专注工作',        time:'09:30–12:00', color:'#6b9fd4', sub:'2.5h · 可用番茄钟' },
+
+  // 午饭
+  { id:'laundry', block:'lunch',   name:'启动洗衣机',      time:'12:00',       color:'#d4695a', sub:'边做饭边洗衣服 💡' },
+  { id:'lunch1',  block:'lunch',   name:'做午饭',          time:'12:00–12:30', color:'#6b6860', sub:'' },
+  { id:'lunch2',  block:'lunch',   name:'吃午饭 · 休息',   time:'12:30–13:00', color:'#d4695a', sub:'' },
+
+  // 下午工作
+  { id:'work2',   block:'work_pm', name:'专注工作',        time:'13:00–17:00', color:'#6b9fd4', sub:'4h · 中间可短休 10min' },
+  { id:'clothes', block:'work_pm', name:'晾衣服 / 换洗',   time:'约 15:00',    color:'#6b6860', sub:'工作间隙处理' },
+
+  // 晚饭
+  { id:'dinner1', block:'dinner',  name:'做晚饭',          time:'17:00–17:30', color:'#6b6860', sub:'' },
+  { id:'dinner2', block:'dinner',  name:'吃晚饭',          time:'17:30–18:00', color:'#d4695a', sub:'' },
+
+  // 运动
+  { id:'sport',   block:'sport',   name:'运动 1 小时',     time:'18:30–19:30', color:'#6aaa6a', sub:'饭后 30min 再运动更好' },
+
+  // 晚间
+  { id:'buffer',  block:'evening', name:'收拾 · 缓冲',     time:'19:30–20:00', color:'#6b6860', sub:'' },
+  { id:'work3',   block:'evening', name:'晚间工作',        time:'20:00–21:30', color:'#6b9fd4', sub:'1.5h' },
+  { id:'shower',  block:'evening', name:'洗澡 · 放松',     time:'21:30',       color:'#9b7fd4', sub:'' },
+  { id:'sleep',   block:'evening', name:'上床睡觉',        time:'22:00',       color:'#9b7fd4', sub:'目标睡足 8h 🌙' },
+];
+
+const BLOCKS = {
+  morning: { label: '早晨', time: '08:00–09:30', color: '#d4a843' },
+  work_am: { label: '上午工作', time: '09:30–12:00', color: '#6b9fd4' },
+  lunch:   { label: '午饭', time: '12:00–13:00', color: '#d4695a' },
+  work_pm: { label: '下午工作', time: '13:00–17:00', color: '#6b9fd4' },
+  dinner:  { label: '晚饭', time: '17:00–18:00', color: '#d4695a' },
+  sport:   { label: '运动', time: '18:30–19:30', color: '#6aaa6a' },
+  evening: { label: '晚间', time: '19:30–22:00', color: '#9b7fd4' },
+};
+
+function todayKey() {
+  const d = new Date();
+  return `sop_${d.getFullYear()}_${d.getMonth()}_${d.getDate()}`;
+}
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(todayKey())) || {}; } catch { return {}; }
+}
+
+function saveState(state) {
+  localStorage.setItem(todayKey(), JSON.stringify(state));
+}
+
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem('sop_history')) || {}; } catch { return {}; }
+}
+
+function saveHistory(h) {
+  localStorage.setItem('sop_history', JSON.stringify(h));
+}
+
+function getMopDay() {
+  // determine if today is a mop day (alternating)
+  const base = new Date(2024, 0, 1);
+  const today = new Date();
+  const diff = Math.floor((today - base) / 86400000);
+  return diff % 2 === 0;
+}
+
+let state = loadState();
+const isMopDay = getMopDay();
+
+function toggle(id) {
+  state[id] = !state[id];
+  saveState(state);
+  renderTasks();
+  updateProgress();
+
+  const el = document.getElementById('task_' + id);
+  if (el && state[id]) {
+    el.classList.add('just-done');
+    el.addEventListener('animationend', () => el.classList.remove('just-done'), { once: true });
+    spawnParticles(el);
+  }
+
+  const done = TASKS.filter(t => !t.alternate || (t.id === 'mop' && isMopDay) || (t.id !== 'mop')).filter(t => !(t.id === 'vacuum' && isMopDay && false)).filter(t => t.id !== 'mop' || isMopDay);
+  const effective = TASKS.filter(t => t.id !== 'mop' || isMopDay);
+  const total = effective.length;
+  const doneCount = effective.filter(t => state[t.id]).length;
+
+  if (doneCount === total) {
+    setTimeout(() => showCelebration(doneCount), 400);
+  }
+}
+
+function spawnParticles(el) {
+  const rect = el.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const colors = ['#d4a843','#4aada0','#6aaa6a','#9b7fd4','#d4695a'];
+  for (let i = 0; i < 8; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `left:${cx + (Math.random()-0.5)*60}px;top:${cy}px;background:${colors[i%colors.length]};animation-delay:${i*0.05}s`;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 1400);
+  }
+}
+
+function showCelebration(count) {
+  const el = document.getElementById('celebrate');
+  el.classList.add('show');
+  document.getElementById('celebrateSub').textContent = `完成 ${count} 项 · 今天辛苦了 ✨`;
+
+  // save history
+  const h = loadHistory();
+  const k = todayKey();
+  h[k] = 'full';
+  saveHistory(h);
+  renderStreak();
+}
+
+function resetDay() {
+  if (!confirm('确定重置今天的打卡记录？')) return;
+  state = {};
+  saveState(state);
+  renderTasks();
+  updateProgress();
+  document.getElementById('allDoneBanner') && (document.getElementById('allDoneBanner').classList.remove('show'));
+}
+
+function updateProgress() {
+  const effective = TASKS.filter(t => t.id !== 'mop' || isMopDay);
+  const total = effective.length;
+  const done = effective.filter(t => state[t.id]).length;
+  document.getElementById('progressCount').textContent = `${done} / ${total}`;
+  document.getElementById('progressFill').style.width = `${(done/total)*100}%`;
+}
+
+function renderTasks() {
+  const container = document.getElementById('appContent');
+  let html = '';
+  let currentBlock = null;
+
+  for (const t of TASKS) {
+    // skip mop on non-mop days
+    if (t.id === 'mop' && !isMopDay) continue;
+
+    if (t.block !== currentBlock) {
+      currentBlock = t.block;
+      const b = BLOCKS[currentBlock];
+      html += `<div class="block">
+        <div class="block-header">
+          <div class="block-dot" style="background:${b.color}"></div>
+          <span class="block-title">${b.label}</span>
+          <span class="block-time">${b.time}</span>
+        </div>`;
+    }
+
+    // note for alternate tasks
+    if (t.alternate && isMopDay) {
+      // show mop note
+    }
+
+    const done = !!state[t.id];
+    html += `
+      <div class="task${done?' done':''}" id="task_${t.id}" onclick="toggle('${t.id}')"
+           style="--task-color:${t.color}">
+        <div class="check">
+          <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
+            <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="task-content">
+          <div class="task-name">${t.name}</div>
+          ${t.sub ? `<div class="task-sub">${t.sub}</div>` : ''}
+        </div>
+        <div class="task-time">${t.time}</div>
+      </div>`;
+
+    // close block div if next task is different block or last
+    const idx = TASKS.indexOf(t);
+    const nextTask = TASKS.slice(idx+1).find(nt => nt.id !== 'mop' || isMopDay);
+    if (!nextTask || nextTask.block !== currentBlock) {
+      html += '</div>';
+    }
+  }
+
+  // alternating mop reminder
+  if (!isMopDay) {
+    html = html.replace('</div><!-- mop -->', '');
+  }
+
+  html += `<div class="all-done-banner" id="allDoneBanner">
+    <div class="emoji">🏆</div>
+    <p>今日 SOP 全部完成！</p>
+    <small>你真的很厉害</small>
+  </div>`;
+
+  container.innerHTML = html;
+
+  // check if all done
+  const effective = TASKS.filter(t => t.id !== 'mop' || isMopDay);
+  if (effective.every(t => state[t.id])) {
+    document.getElementById('allDoneBanner').classList.add('show');
+  }
+}
+
+function renderStreak() {
+  const h = loadHistory();
+  const row = document.getElementById('streakRow');
+  const days = ['日','一','二','三','四','五','六'];
+  let html = '';
+
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const k = `sop_${d.getFullYear()}_${d.getMonth()}_${d.getDate()}`;
+    const dayLabel = i === 0 ? '今' : days[d.getDay()];
+    const isTodayItem = i === 0;
+
+    let dotClass = 'streak-dot';
+    let symbol = '';
+    if (h[k] === 'full') { dotClass += ' full'; symbol = '✓'; }
+    else if (isTodayItem) {
+      // check partial
+      const st = loadState();
+      const effective = TASKS.filter(t => t.id !== 'mop' || isMopDay);
+      const done = effective.filter(t => st[t.id]).length;
+      if (done > 0) { dotClass += ' partial today'; symbol = done; }
+      else dotClass += ' today';
+    }
+
+    html += `<div class="streak-day">
+      <div class="${dotClass}">${symbol}</div>
+      <div class="streak-label">${dayLabel}</div>
+    </div>`;
+  }
+
+  row.innerHTML = html;
+}
+
+function setDate() {
+  const d = new Date();
+  const days = ['周日','周一','周二','周三','周四','周五','周六'];
+  document.getElementById('dateStr').textContent =
+    `${d.getMonth()+1}月${d.getDate()}日 ${days[d.getDay()]}`;
+}
+
+// Init
+setDate();
+renderTasks();
+updateProgress();
+renderStreak();
+</script>
+</body>
+</html>
