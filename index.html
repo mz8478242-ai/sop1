@@ -716,3 +716,630 @@ renderStreak();
 </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>今日 SOP</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f0e0c; --surface:#1a1916; --surface2:#222118; --border:#2e2c26;
+  --text:#e8e4d9; --muted:#6b6860;
+  --amber:#d4a843; --amber-dim:#7a5e1e;
+  --teal:#4aada0; --coral:#d4695a; --green:#6aaa6a; --blue:#6b9fd4; --purple:#9b7fd4;
+  --done-bg:#1e2b1e; --done-border:#3a5a3a; --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Serif SC',serif;min-height:100vh;padding-bottom:60px;}
+
+/* ── NAV TABS ── */
+.tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:200;}
+.tab{flex:1;padding:14px 0;text-align:center;font-size:13px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;}
+.tab.active{color:var(--amber);border-bottom-color:var(--amber);}
+
+/* ── HEADER ── */
+.header{background:var(--bg);border-bottom:1px solid var(--border);padding:14px 20px 12px;position:sticky;top:45px;z-index:100;}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start;}
+.header h1{font-size:20px;font-weight:600;letter-spacing:.05em;color:var(--amber);}
+.header .date{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);margin-top:3px;}
+.reset-btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'Noto Serif SC',serif;font-size:11px;padding:5px 10px;border-radius:20px;cursor:pointer;}
+.reset-btn:active{background:var(--border);}
+
+/* week nav */
+.week-nav{display:flex;align-items:center;justify-content:space-between;padding:10px 20px 0;}
+.week-nav-btn{background:none;border:1px solid var(--border);color:var(--muted);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.week-nav-btn:active{background:var(--border);}
+.week-days{display:flex;gap:6px;}
+.week-day{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:4px 6px;border-radius:8px;transition:background .15s;}
+.week-day:active{background:var(--surface2);}
+.week-day.selected .wd-dot{border-color:var(--amber);border-width:2px;}
+.week-day.selected .wd-label{color:var(--amber);}
+.wd-dot{width:30px;height:30px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .3s;}
+.wd-dot.full{background:var(--amber);border-color:var(--amber);color:#0f0e0c;font-weight:700;}
+.wd-dot.partial{background:var(--amber-dim);border-color:var(--amber-dim);}
+.wd-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);}
+
+/* progress */
+.progress-wrap{margin-top:10px;}
+.progress-row{display:flex;justify-content:space-between;margin-bottom:5px;}
+.progress-label{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);}
+.progress-count{font-family:'Space Mono',monospace;font-size:11px;color:var(--amber);}
+.progress-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--amber-dim),var(--amber));border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1);}
+
+/* ── BLOCKS ── */
+.block{margin:14px 14px 0;}
+.block-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:0 4px;}
+.block-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.block-title{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.block-time{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-left:auto;}
+
+/* ── TASK ── */
+.task-wrap{margin-bottom:8px;}
+.task{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:13px 14px;display:flex;align-items:center;gap:11px;cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);user-select:none;-webkit-user-select:none;position:relative;overflow:hidden;}
+.task::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;background:var(--task-color,var(--border));transition:background .3s;}
+.task:active{transform:scale(.98);}
+.task.done{background:var(--done-bg);border-color:var(--done-border);opacity:.7;}
+.task.done::before{background:var(--green);}
+.check{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s cubic-bezier(.4,0,.2,1);background:var(--surface2);}
+.task.done .check{background:var(--green);border-color:var(--green);}
+.check svg{opacity:0;transform:scale(.5);transition:all .25s cubic-bezier(.4,0,.2,1);}
+.task.done .check svg{opacity:1;transform:scale(1);}
+.task-content{flex:1;min-width:0;}
+.task-name{font-size:15px;color:var(--text);transition:color .3s;}
+.task.done .task-name{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--done-border);}
+.task-sub{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-top:3px;}
+.task-time{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);flex-shrink:0;}
+.task.done .task-time{opacity:.5;}
+/* readonly past day */
+.task.readonly{cursor:default;opacity:.6;}
+.task.readonly:active{transform:none;}
+
+/* ── NOTE INPUT ── */
+.note-area{background:var(--surface2);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:10px 14px;display:none;}
+.note-area.open{display:block;}
+.note-area textarea{width:100%;background:none;border:none;color:var(--text);font-family:'Noto Serif SC',serif;font-size:13px;resize:none;outline:none;min-height:48px;line-height:1.6;}
+.note-area textarea::placeholder{color:var(--muted);}
+.note-area textarea:disabled{opacity:.6;cursor:default;}
+.note-tag{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.08em;}
+/* when task has note area, remove bottom radius */
+.task.has-note{border-radius:var(--radius) var(--radius) 0 0;}
+
+/* note toggle btn */
+.note-btn{background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0 0 0 4px;flex-shrink:0;transition:color .2s;}
+.note-btn:active{color:var(--amber);}
+.task.done .note-btn{color:var(--done-border);}
+
+/* ── YEAR VIEW ── */
+#yearView{padding:14px;}
+.year-title{font-size:16px;font-weight:600;color:var(--amber);text-align:center;margin-bottom:16px;letter-spacing:.05em;}
+.months-grid{display:flex;flex-direction:column;gap:20px;}
+.month-block{}
+.month-name{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:8px;letter-spacing:.1em;}
+.days-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.day-cell{aspect-ratio:1;border-radius:4px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);cursor:pointer;transition:all .15s;position:relative;}
+.day-cell:active{opacity:.7;}
+.day-cell.empty{background:none;border-color:transparent;cursor:default;}
+.day-cell.full{background:var(--amber);border-color:var(--amber);color:#0f0e0c;font-weight:700;}
+.day-cell.partial{background:var(--amber-dim);border-color:var(--amber-dim);color:#e8d4a0;}
+.day-cell.today{border-color:var(--amber);border-width:2px;color:var(--amber);}
+.day-cell.future{opacity:.3;cursor:default;}
+.weekday-headers{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px;}
+.weekday-hd{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);text-align:center;}
+/* day detail popup */
+.day-popup{position:fixed;inset:0;background:rgba(15,14,12,.92);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .25s;}
+.day-popup.show{opacity:1;pointer-events:all;}
+.popup-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;width:100%;max-width:360px;padding:20px;max-height:80vh;overflow-y:auto;}
+.popup-date{font-size:14px;font-weight:600;color:var(--amber);margin-bottom:14px;}
+.popup-close{float:right;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;margin-top:-4px;}
+.popup-item{padding:8px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:10px;}
+.popup-item:last-child{border-bottom:none;}
+.popup-check{width:18px;height:18px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.popup-check.no{background:var(--surface2);border:1px solid var(--border);}
+.popup-item-text{font-size:13px;color:var(--text);}
+.popup-note{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-top:3px;}
+.popup-empty{font-size:13px;color:var(--muted);text-align:center;padding:20px 0;}
+
+/* ── CELEBRATE ── */
+.celebrate{position:fixed;inset:0;background:rgba(15,14,12,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;opacity:0;pointer-events:none;transition:opacity .4s;}
+.celebrate.show{opacity:1;pointer-events:all;}
+.celebrate-emoji{font-size:72px;animation:bounce .6s ease infinite alternate;}
+.celebrate-text{font-size:24px;font-weight:600;color:var(--amber);margin-top:20px;}
+.celebrate-sub{font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);margin-top:8px;}
+.celebrate-close{margin-top:32px;background:var(--amber);color:var(--bg);border:none;font-family:'Noto Serif SC',serif;font-size:15px;font-weight:600;padding:12px 32px;border-radius:30px;cursor:pointer;}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-12px)}}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.07)}100%{transform:scale(1)}}
+.task.just-done{animation:pop .3s ease;}
+
+/* particle */
+.particle{position:fixed;width:6px;height:6px;border-radius:50%;pointer-events:none;z-index:998;animation:fall 1.2s ease forwards;}
+@keyframes fall{0%{opacity:1;transform:translateY(0) rotate(0deg)}100%{opacity:0;transform:translateY(200px) rotate(360deg)}}
+
+/* all-done banner */
+.all-done-banner{margin:14px;background:linear-gradient(135deg,#1a2a1a,#1e2e1e);border:1px solid var(--done-border);border-radius:var(--radius);padding:16px;text-align:center;display:none;}
+.all-done-banner.show{display:block;}
+.all-done-banner .emoji{font-size:32px;}
+.all-done-banner p{color:var(--green);font-size:15px;margin-top:8px;}
+.all-done-banner small{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);display:block;margin-top:4px;}
+
+/* view toggle */
+.view-hidden{display:none!important;}
+</style>
+</head>
+<body>
+
+<div class="tabs">
+  <div class="tab active" id="tab-daily" onclick="switchTab('daily')">每日打卡</div>
+  <div class="tab" id="tab-year" onclick="switchTab('year')">年度总览</div>
+</div>
+
+<!-- ══ DAILY VIEW ══ -->
+<div id="dailyView">
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <h1 id="headerTitle">今日 SOP</h1>
+        <div class="date" id="dateStr"></div>
+      </div>
+      <button class="reset-btn" onclick="resetDay()">重置</button>
+    </div>
+    <!-- Week nav -->
+    <div class="week-nav">
+      <button class="week-nav-btn" onclick="shiftWeek(-1)">‹</button>
+      <div class="week-days" id="weekDays"></div>
+      <button class="week-nav-btn" onclick="shiftWeek(1)">›</button>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-row">
+        <span class="progress-label">进度</span>
+        <span class="progress-count" id="progressCount">0 / 0</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div id="appContent"></div>
+</div>
+
+<!-- ══ YEAR VIEW ══ -->
+<div id="yearView" class="view-hidden">
+  <div class="year-title">2026 全年打卡</div>
+  <div id="yearGrid"></div>
+</div>
+
+<!-- Day detail popup -->
+<div class="day-popup" id="dayPopup">
+  <div class="popup-card">
+    <button class="popup-close" onclick="closePopup()">×</button>
+    <div class="popup-date" id="popupDate"></div>
+    <div id="popupContent"></div>
+  </div>
+</div>
+
+<!-- Celebrate -->
+<div class="celebrate" id="celebrate">
+  <div class="celebrate-emoji">🎉</div>
+  <div class="celebrate-text">今天全部完成！</div>
+  <div class="celebrate-sub" id="celebrateSub"></div>
+  <button class="celebrate-close" onclick="document.getElementById('celebrate').classList.remove('show')">太好了！</button>
+</div>
+
+<script>
+// ══ DATA ══
+const TASKS = [
+  // 早晨
+  {id:'wake',   block:'morning', name:'起床 · 洗漱',      time:'08:00',        color:'#d4a843'},
+  {id:'cat',    block:'morning', name:'给猫喂药',          time:'08:05',        color:'#d4a843', sub:'趁猫饿着最配合 🐱'},
+  {id:'bfast',  block:'morning', name:'做早饭 + 吃早饭',   time:'08:10–08:30',  color:'#4aada0', noteLabel:'今天吃了什么？', hasNote:true},
+  {id:'toilet', block:'morning', name:'拉屎 · 整理仪容',   time:'08:30–08:50',  color:'#6b6860'},
+  {id:'vacuum', block:'morning', name:'吸地',              time:'08:50–09:10',  color:'#4aada0', sub:'每天必做'},
+  {id:'mop',    block:'morning', name:'拖地',              time:'09:10–09:20',  color:'#4aada0', sub:'隔天做', alternate:true},
+  {id:'tidy',   block:'morning', name:'整理房间 · 准备工作',time:'09:20–09:30', color:'#6b6860'},
+  // 上午工作
+  {id:'work1',  block:'work_am', name:'专注工作',          time:'09:30–12:00',  color:'#6b9fd4', sub:'2.5h · 可用番茄钟', noteLabel:'今天上午做了什么？', hasNote:true},
+  // 午饭
+  {id:'lunch1', block:'lunch',   name:'做午饭',            time:'12:00–12:30',  color:'#6b6860', noteLabel:'中午吃了什么？', hasNote:true},
+  {id:'lunch2', block:'lunch',   name:'吃午饭 · 休息',     time:'12:30–13:30',  color:'#d4695a'},
+  // 下午工作
+  {id:'work2',  block:'work_pm', name:'专注工作',          time:'13:30–17:00',  color:'#6b9fd4', sub:'3.5h · 中间可短休 10min', noteLabel:'今天下午做了什么？', hasNote:true},
+  // 晚饭
+  {id:'dinner1',block:'dinner',  name:'做晚饭 + 吃晚饭',   time:'17:00–17:30',  color:'#d4695a', noteLabel:'晚上吃了什么？', hasNote:true},
+  // 运动
+  {id:'sport',  block:'sport',   name:'运动 1 小时',       time:'18:30–19:30',  color:'#6aaa6a', sub:'饭后 30min 再运动更好', noteLabel:'今天运动了什么？', hasNote:true},
+  // 晚间
+  {id:'buffer', block:'evening', name:'收拾 · 缓冲',       time:'19:30–20:00',  color:'#6b6860'},
+  {id:'work3',  block:'evening', name:'晚间工作',          time:'20:00–21:30',  color:'#6b9fd4', sub:'1.5h', noteLabel:'今天晚上做了什么？', hasNote:true},
+  {id:'shower', block:'evening', name:'洗澡 · 放松',       time:'21:30',        color:'#9b7fd4'},
+  {id:'sleep',  block:'evening', name:'上床睡觉',          time:'22:00',        color:'#9b7fd4', sub:'目标睡足 8h 🌙'},
+];
+
+const BLOCKS = {
+  morning: {label:'早晨',    time:'08:00–09:30', color:'#d4a843'},
+  work_am: {label:'上午工作',time:'09:30–12:00', color:'#6b9fd4'},
+  lunch:   {label:'午饭',    time:'12:00–13:30', color:'#d4695a'},
+  work_pm: {label:'下午工作',time:'13:30–17:00', color:'#6b9fd4'},
+  dinner:  {label:'晚饭',    time:'17:00–17:30', color:'#d4695a'},
+  sport:   {label:'运动',    time:'18:30–19:30', color:'#6aaa6a'},
+  evening: {label:'晚间',    time:'19:30–22:00', color:'#9b7fd4'},
+};
+
+// ══ STATE ══
+let viewingDate = new Date(); // which date is shown
+let weekOffset = 0; // 0 = current week
+
+function dateKey(d) {
+  return `sop_${d.getFullYear()}_${String(d.getMonth()).padStart(2,'0')}_${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function todayKey() { return dateKey(new Date()); }
+
+function isToday(d) {
+  const t = new Date();
+  return d.getFullYear()===t.getFullYear() && d.getMonth()===t.getMonth() && d.getDate()===t.getDate();
+}
+
+function isFuture(d) {
+  const t = new Date(); t.setHours(0,0,0,0); d = new Date(d); d.setHours(0,0,0,0);
+  return d > t;
+}
+
+function loadDayData(d) {
+  try { return JSON.parse(localStorage.getItem(dateKey(d))) || {}; } catch { return {}; }
+}
+
+function saveDayData(d, data) {
+  localStorage.setItem(dateKey(d), JSON.stringify(data));
+}
+
+function getMopDay(d) {
+  const base = new Date(2024,0,1);
+  const diff = Math.floor((d - base) / 86400000);
+  return diff % 2 === 0;
+}
+
+function effectiveTasks(d) {
+  const isMop = getMopDay(d);
+  return TASKS.filter(t => t.id !== 'mop' || isMop);
+}
+
+// ══ TAB ══
+let currentTab = 'daily';
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('dailyView').classList.toggle('view-hidden', tab !== 'daily');
+  document.getElementById('yearView').classList.toggle('view-hidden', tab !== 'year');
+  document.getElementById('tab-daily').classList.toggle('active', tab === 'daily');
+  document.getElementById('tab-year').classList.toggle('active', tab === 'year');
+  if (tab === 'year') renderYear();
+}
+
+// ══ WEEK NAV ══
+function getWeekDates() {
+  const today = new Date();
+  // Monday-based week
+  const dow = (today.getDay() + 6) % 7; // 0=Mon
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - dow + weekOffset * 7);
+  const dates = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    dates.push(d);
+  }
+  return dates;
+}
+
+function shiftWeek(dir) {
+  // can't go into future weeks beyond current
+  const newOffset = weekOffset + dir;
+  if (newOffset > 0) return;
+  weekOffset = newOffset;
+  renderWeekDays();
+  // if viewing date no longer in week, pick monday of new week or today
+  const dates = getWeekDates();
+  const inWeek = dates.some(d => dateKey(d) === dateKey(viewingDate));
+  if (!inWeek) {
+    viewingDate = isToday(dates[6]) || weekOffset === 0 ? new Date() : dates[0];
+  }
+  renderDailyView();
+}
+
+function selectDay(d) {
+  viewingDate = d;
+  renderWeekDays();
+  renderDailyView();
+}
+
+function renderWeekDays() {
+  const dates = getWeekDates();
+  const labels = ['一','二','三','四','五','六','日'];
+  let html = '';
+  dates.forEach((d, i) => {
+    const data = loadDayData(d);
+    const tasks = effectiveTasks(d);
+    const total = tasks.length;
+    const done = tasks.filter(t => data[t.id+'_done']).length;
+    const future = isFuture(d);
+    const selected = dateKey(d) === dateKey(viewingDate);
+
+    let dotClass = 'wd-dot';
+    let sym = d.getDate();
+    if (!future && total > 0) {
+      if (done === total) { dotClass += ' full'; sym = '✓'; }
+      else if (done > 0) dotClass += ' partial';
+    }
+
+    html += `<div class="week-day${selected?' selected':''}" onclick="selectDay(new Date(${d.getFullYear()},${d.getMonth()},${d.getDate()}))">
+      <div class="${dotClass}">${sym}</div>
+      <div class="wd-label">${labels[i]}</div>
+    </div>`;
+  });
+  document.getElementById('weekDays').innerHTML = html;
+}
+
+// ══ DAILY RENDER ══
+function renderDailyView() {
+  const d = viewingDate;
+  const past = !isToday(d) && !isFuture(d);
+  const future = isFuture(d);
+  const readonly = past || future;
+
+  // header
+  const dayNames = ['周日','周一','周二','周三','周四','周五','周六'];
+  document.getElementById('dateStr').textContent =
+    `${d.getMonth()+1}月${d.getDate()}日 ${dayNames[d.getDay()]}${isToday(d)?' · 今天':''}`;
+  document.getElementById('headerTitle').textContent = future ? '未来' : past ? '历史记录' : '今日 SOP';
+
+  const data = loadDayData(d);
+  const tasks = effectiveTasks(d);
+
+  updateProgress(d, data, tasks);
+
+  const container = document.getElementById('appContent');
+  let html = '';
+  let currentBlock = null;
+
+  tasks.forEach((t, idx) => {
+    if (t.block !== currentBlock) {
+      if (currentBlock !== null) html += '</div>';
+      currentBlock = t.block;
+      const b = BLOCKS[currentBlock];
+      html += `<div class="block">
+        <div class="block-header">
+          <div class="block-dot" style="background:${b.color}"></div>
+          <span class="block-title">${b.label}</span>
+          <span class="block-time">${b.time}</span>
+        </div>`;
+    }
+
+    const done = !!data[t.id+'_done'];
+    const noteVal = data[t.id+'_note'] || '';
+    const noteOpen = noteVal.length > 0; // show note area if has content
+    const hasNote = !!t.hasNote;
+
+    html += `<div class="task-wrap">
+      <div class="task${done?' done':''}${readonly?' readonly':''}${hasNote?' has-note':''}" id="task_${t.id}"
+           style="--task-color:${t.color}" ${readonly?'':'onclick="toggle(\''+t.id+'\')"'}>
+        <div class="check">
+          <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
+            <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="task-content">
+          <div class="task-name">${t.name}</div>
+          ${t.sub?`<div class="task-sub">${t.sub}</div>`:''}
+        </div>
+        <div class="task-time">${t.time}</div>
+        ${hasNote?`<button class="note-btn" onclick="event.stopPropagation();toggleNote('${t.id}')" title="记录备注">✏️</button>`:''}
+      </div>
+      ${hasNote?`<div class="note-area${noteOpen?' open':''}" id="note_${t.id}">
+        <div class="note-tag">${t.noteLabel||'备注'}</div>
+        <textarea id="notetext_${t.id}" placeholder="${t.noteLabel||'写点什么...'}"
+          ${readonly?'disabled':''}
+          onblur="saveNote('${t.id}')"
+          oninput="autoResize(this)"
+        >${noteVal}</textarea>
+      </div>`:''}
+    </div>`;
+  });
+
+  if (currentBlock) html += '</div>';
+
+  if (!future) {
+    html += `<div class="all-done-banner" id="allDoneBanner">
+      <div class="emoji">🏆</div>
+      <p>SOP 全部完成！</p>
+      <small>你真的很厉害 ✨</small>
+    </div>`;
+  }
+
+  container.innerHTML = html;
+
+  if (!future) {
+    const allDone = tasks.every(t => data[t.id+'_done']);
+    if (allDone) document.getElementById('allDoneBanner')?.classList.add('show');
+  }
+}
+
+function toggle(id) {
+  if (isFuture(viewingDate)) return;
+  const data = loadDayData(viewingDate);
+  data[id+'_done'] = !data[id+'_done'];
+  saveDayData(viewingDate, data);
+
+  const tasks = effectiveTasks(viewingDate);
+  updateProgress(viewingDate, data, tasks);
+  renderDailyView();
+  renderWeekDays();
+
+  const el = document.getElementById('task_' + id);
+  if (el && data[id+'_done']) {
+    el.classList.add('just-done');
+    el.addEventListener('animationend', () => el.classList.remove('just-done'), {once:true});
+    spawnParticles(el);
+  }
+
+  if (isToday(viewingDate)) {
+    const allDone = tasks.every(t => data[t.id+'_done']);
+    if (allDone) setTimeout(() => showCelebration(tasks.length), 400);
+  }
+}
+
+function toggleNote(id) {
+  const area = document.getElementById('note_' + id);
+  if (area) {
+    area.classList.toggle('open');
+    if (area.classList.contains('open')) {
+      setTimeout(() => document.getElementById('notetext_'+id)?.focus(), 50);
+    }
+  }
+}
+
+function saveNote(id) {
+  const el = document.getElementById('notetext_' + id);
+  if (!el) return;
+  const data = loadDayData(viewingDate);
+  data[id+'_note'] = el.value;
+  saveDayData(viewingDate, data);
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
+function updateProgress(d, data, tasks) {
+  const total = tasks.length;
+  const done = tasks.filter(t => data[t.id+'_done']).length;
+  document.getElementById('progressCount').textContent = `${done} / ${total}`;
+  document.getElementById('progressFill').style.width = `${total?((done/total)*100):0}%`;
+}
+
+function resetDay() {
+  if (isFuture(viewingDate)) return;
+  if (!confirm('确定重置这天的打卡记录？')) return;
+  saveDayData(viewingDate, {});
+  renderDailyView();
+  renderWeekDays();
+}
+
+// ══ PARTICLES ══
+function spawnParticles(el) {
+  const rect = el.getBoundingClientRect();
+  const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+  const colors = ['#d4a843','#4aada0','#6aaa6a','#9b7fd4','#d4695a'];
+  for (let i=0;i<8;i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `left:${cx+(Math.random()-.5)*60}px;top:${cy}px;background:${colors[i%colors.length]};animation-delay:${i*.05}s`;
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),1400);
+  }
+}
+
+// ══ CELEBRATE ══
+function showCelebration(count) {
+  const el = document.getElementById('celebrate');
+  el.classList.add('show');
+  document.getElementById('celebrateSub').textContent = `完成 ${count} 项 · 今天辛苦了 ✨`;
+}
+
+// ══ YEAR VIEW ══
+function renderYear() {
+  const container = document.getElementById('yearGrid');
+  const year = 2026;
+  const today = new Date();
+  const monthNames = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+  const wdLabels = ['一','二','三','四','五','六','日'];
+
+  let html = `<div class="months-grid">`;
+
+  for (let m = 0; m < 12; m++) {
+    html += `<div class="month-block"><div class="month-name">${year} · ${monthNames[m]}</div>`;
+    html += `<div class="weekday-headers">${wdLabels.map(l=>`<div class="weekday-hd">${l}</div>`).join('')}</div>`;
+    html += `<div class="days-grid">`;
+
+    const firstDay = new Date(year, m, 1);
+    const startDow = (firstDay.getDay() + 6) % 7; // Mon=0
+    const daysInMonth = new Date(year, m+1, 0).getDate();
+
+    for (let e = 0; e < startDow; e++) html += `<div class="day-cell empty"></div>`;
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const d = new Date(year, m, day);
+      const data = loadDayData(d);
+      const tasks = effectiveTasks(d);
+      const total = tasks.length;
+      const done = tasks.filter(t => data[t.id+'_done']).length;
+      const future = isFuture(d);
+      const todayCell = isToday(d);
+
+      let cls = 'day-cell';
+      if (future) cls += ' future';
+      else if (todayCell) cls += ' today';
+      else if (done === total && total > 0) cls += ' full';
+      else if (done > 0) cls += ' partial';
+
+      const clickable = !future;
+      html += `<div class="${cls}" ${clickable?`onclick="openDayPopup(${year},${m},${day})"`:''}>${day}</div>`;
+    }
+
+    html += `</div></div>`;
+  }
+
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
+function openDayPopup(year, month, day) {
+  const d = new Date(year, month, day);
+  if (isFuture(d)) return;
+
+  const data = loadDayData(d);
+  const tasks = effectiveTasks(d);
+  const dayNames = ['周日','周一','周二','周三','周四','周五','周六'];
+
+  document.getElementById('popupDate').textContent =
+    `${year}年${month+1}月${day}日 ${dayNames[d.getDay()]}`;
+
+  const done = tasks.filter(t => data[t.id+'_done']).length;
+
+  if (done === 0) {
+    document.getElementById('popupContent').innerHTML =
+      `<div class="popup-empty">暂无打卡记录</div>`;
+  } else {
+    let html = '';
+    tasks.forEach(t => {
+      const isDone = !!data[t.id+'_done'];
+      const note = data[t.id+'_note'] || '';
+      html += `<div class="popup-item">
+        <div class="popup-check${isDone?'':' no'}">${isDone?`<svg width="10" height="8" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div>
+        <div>
+          <div class="popup-item-text" style="color:${isDone?'var(--text)':'var(--muted)'}">${t.name}</div>
+          ${note?`<div class="popup-note">${note}</div>`:''}
+        </div>
+      </div>`;
+    });
+    document.getElementById('popupContent').innerHTML = html;
+  }
+
+  document.getElementById('dayPopup').classList.add('show');
+}
+
+function closePopup() {
+  document.getElementById('dayPopup').classList.remove('show');
+}
+document.getElementById('dayPopup').addEventListener('click', function(e){
+  if (e.target === this) closePopup();
+});
+
+// ══ INIT ══
+viewingDate = new Date();
+renderWeekDays();
+renderDailyView();
+</script>
+</body>
+</html>
