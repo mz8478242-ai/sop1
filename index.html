@@ -14,30 +14,37 @@
   --amber:#d4a843; --amber-dim:#7a5e1e;
   --teal:#4aada0; --coral:#d4695a; --green:#6aaa6a; --blue:#6b9fd4; --purple:#9b7fd4;
   --done-bg:#1e2b1e; --done-border:#3a5a3a; --radius:14px;
+  --bg-overlay:rgba(15,14,12,0.82);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-body{background:var(--bg);color:var(--text);font-family:'Noto Serif SC',serif;min-height:100vh;padding-bottom:60px;}
+#bgLayer{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center;background-repeat:no-repeat;}
+body{color:var(--text);font-family:'Noto Serif SC',serif;min-height:100vh;padding-bottom:60px;}
+body:not(.has-bg){background:var(--bg);}
+body.has-bg .tabs,body.has-bg .header{background:var(--bg-overlay)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+body.has-bg .task{background:rgba(26,25,22,0.78);}
+body.has-bg .note-area{background:rgba(34,33,24,0.78);}
+body.has-bg .popup-card{background:rgba(26,25,22,0.96);}
 
-/* ── NAV TABS ── */
+/* TABS */
 .tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:200;}
-.tab{flex:1;padding:14px 0;text-align:center;font-size:13px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;}
+.tab{flex:1;padding:13px 0;text-align:center;font-size:13px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;}
 .tab.active{color:var(--amber);border-bottom-color:var(--amber);}
+.tab-icon{font-size:16px;padding:11px 0;}
 
-/* ── HEADER ── */
-.header{background:var(--bg);border-bottom:1px solid var(--border);padding:14px 20px 12px;position:sticky;top:45px;z-index:100;}
+/* HEADER */
+.header{background:var(--bg);border-bottom:1px solid var(--border);padding:14px 20px 12px;position:sticky;top:44px;z-index:100;}
 .header-top{display:flex;justify-content:space-between;align-items:flex-start;}
 .header h1{font-size:20px;font-weight:600;letter-spacing:.05em;color:var(--amber);}
 .header .date{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);margin-top:3px;}
 .reset-btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'Noto Serif SC',serif;font-size:11px;padding:5px 10px;border-radius:20px;cursor:pointer;}
 .reset-btn:active{background:var(--border);}
 
-/* week nav */
+/* WEEK NAV */
 .week-nav{display:flex;align-items:center;justify-content:space-between;padding:10px 20px 0;}
 .week-nav-btn{background:none;border:1px solid var(--border);color:var(--muted);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
 .week-nav-btn:active{background:var(--border);}
-.week-days{display:flex;gap:6px;}
-.week-day{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:4px 6px;border-radius:8px;transition:background .15s;}
-.week-day:active{background:var(--surface2);}
+.week-days{display:flex;gap:5px;}
+.week-day{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:4px 5px;border-radius:8px;transition:background .15s;}
 .week-day.selected .wd-dot{border-color:var(--amber);border-width:2px;}
 .week-day.selected .wd-label{color:var(--amber);}
 .wd-dot{width:30px;height:30px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .3s;}
@@ -45,7 +52,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Serif SC',serif;mi
 .wd-dot.partial{background:var(--amber-dim);border-color:var(--amber-dim);}
 .wd-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);}
 
-/* progress */
+/* PROGRESS */
 .progress-wrap{margin-top:10px;}
 .progress-row{display:flex;justify-content:space-between;margin-bottom:5px;}
 .progress-label{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);}
@@ -53,20 +60,23 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Serif SC',serif;mi
 .progress-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--amber-dim),var(--amber));border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1);}
 
-/* ── BLOCKS ── */
+/* BLOCKS */
 .block{margin:14px 14px 0;}
 .block-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:0 4px;}
 .block-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 .block-title{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
 .block-time{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-left:auto;}
 
-/* ── TASK ── */
+/* TASK */
 .task-wrap{margin-bottom:8px;}
 .task{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:13px 14px;display:flex;align-items:center;gap:11px;cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);user-select:none;-webkit-user-select:none;position:relative;overflow:hidden;}
 .task::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;background:var(--task-color,var(--border));transition:background .3s;}
 .task:active{transform:scale(.98);}
 .task.done{background:var(--done-bg);border-color:var(--done-border);opacity:.7;}
 .task.done::before{background:var(--green);}
+.task.readonly{cursor:default;}
+.task.readonly:active{transform:none;}
+.task.has-note{border-radius:var(--radius) var(--radius) 0 0;}
 .check{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s cubic-bezier(.4,0,.2,1);background:var(--surface2);}
 .task.done .check{background:var(--green);border-color:var(--green);}
 .check svg{opacity:0;transform:scale(.5);transition:all .25s cubic-bezier(.4,0,.2,1);}
@@ -77,42 +87,60 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Serif SC',serif;mi
 .task-sub{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-top:3px;}
 .task-time{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);flex-shrink:0;}
 .task.done .task-time{opacity:.5;}
-/* readonly past day */
-.task.readonly{cursor:default;opacity:.6;}
-.task.readonly:active{transform:none;}
+.note-btn{background:none;border:none;color:var(--muted);font-size:15px;cursor:pointer;padding:0 0 0 4px;flex-shrink:0;}
 
-/* ── NOTE INPUT ── */
+/* NOTE AREA */
 .note-area{background:var(--surface2);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:10px 14px;display:none;}
 .note-area.open{display:block;}
-.note-area textarea{width:100%;background:none;border:none;color:var(--text);font-family:'Noto Serif SC',serif;font-size:13px;resize:none;outline:none;min-height:48px;line-height:1.6;}
+.note-tag{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em;}
+.note-area textarea{width:100%;background:none;border:none;color:var(--text);font-family:'Noto Serif SC',serif;font-size:13px;resize:none;outline:none;min-height:44px;line-height:1.6;}
 .note-area textarea::placeholder{color:var(--muted);}
-.note-area textarea:disabled{opacity:.6;cursor:default;}
-.note-tag{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.08em;}
-/* when task has note area, remove bottom radius */
-.task.has-note{border-radius:var(--radius) var(--radius) 0 0;}
+.note-btn-row{display:flex;gap:6px;margin-top:8px;}
+.note-img-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-size:11px;padding:5px 12px;border-radius:20px;cursor:pointer;font-family:'Noto Serif SC',serif;}
+.note-img-btn:active{background:var(--border);}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;}
+.photo-thumb{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--surface);}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;cursor:pointer;}
+.photo-del{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.65);border:none;color:#fff;width:20px;height:20px;border-radius:50%;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 
-/* note toggle btn */
-.note-btn{background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0 0 0 4px;flex-shrink:0;transition:color .2s;}
-.note-btn:active{color:var(--amber);}
-.task.done .note-btn{color:var(--done-border);}
+/* LIGHTBOX */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:800;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;}
+.lightbox.show{opacity:1;pointer-events:all;}
+.lightbox img{max-width:95vw;max-height:90vh;border-radius:10px;object-fit:contain;}
 
-/* ── YEAR VIEW ── */
+/* SETTINGS */
+#settingsView{padding:20px;}
+.settings-title{font-size:16px;font-weight:600;color:var(--amber);margin-bottom:20px;}
+.settings-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;}
+.settings-label{font-size:14px;color:var(--text);margin-bottom:12px;font-weight:600;}
+.settings-hint{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-top:8px;line-height:1.6;}
+.bg-preview{width:100%;height:130px;border-radius:10px;object-fit:cover;display:none;margin-bottom:12px;border:1px solid var(--border);}
+.bg-preview.show{display:block;}
+.btn-primary{background:var(--amber);color:#0f0e0c;border:none;font-family:'Noto Serif SC',serif;font-size:13px;font-weight:600;padding:11px 20px;border-radius:20px;cursor:pointer;width:100%;}
+.btn-primary:active{opacity:.8;}
+.btn-danger{background:none;border:1px solid var(--coral);color:var(--coral);font-family:'Noto Serif SC',serif;font-size:13px;padding:10px 20px;border-radius:20px;cursor:pointer;width:100%;margin-top:10px;}
+.btn-danger:active{opacity:.7;}
+.overlay-row{display:flex;align-items:center;gap:10px;margin-top:14px;}
+.overlay-row span{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);white-space:nowrap;}
+.overlay-slider{flex:1;accent-color:var(--amber);}
+
+/* YEAR VIEW */
 #yearView{padding:14px;}
-.year-title{font-size:16px;font-weight:600;color:var(--amber);text-align:center;margin-bottom:16px;letter-spacing:.05em;}
+.year-title{font-size:16px;font-weight:600;color:var(--amber);text-align:center;margin-bottom:16px;}
 .months-grid{display:flex;flex-direction:column;gap:20px;}
-.month-block{}
 .month-name{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:8px;letter-spacing:.1em;}
 .days-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
-.day-cell{aspect-ratio:1;border-radius:4px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);cursor:pointer;transition:all .15s;position:relative;}
+.day-cell{aspect-ratio:1;border-radius:4px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);cursor:pointer;transition:all .15s;}
 .day-cell:active{opacity:.7;}
 .day-cell.empty{background:none;border-color:transparent;cursor:default;}
 .day-cell.full{background:var(--amber);border-color:var(--amber);color:#0f0e0c;font-weight:700;}
 .day-cell.partial{background:var(--amber-dim);border-color:var(--amber-dim);color:#e8d4a0;}
 .day-cell.today{border-color:var(--amber);border-width:2px;color:var(--amber);}
-.day-cell.future{opacity:.3;cursor:default;}
+.day-cell.future{opacity:.22;cursor:default;}
 .weekday-headers{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px;}
 .weekday-hd{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);text-align:center;}
-/* day detail popup */
+
+/* DAY POPUP */
 .day-popup{position:fixed;inset:0;background:rgba(15,14,12,.92);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .25s;}
 .day-popup.show{opacity:1;pointer-events:all;}
 .popup-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;width:100%;max-width:360px;padding:20px;max-height:80vh;overflow-y:auto;}
@@ -122,11 +150,13 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Serif SC',serif;mi
 .popup-item:last-child{border-bottom:none;}
 .popup-check{width:18px;height:18px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
 .popup-check.no{background:var(--surface2);border:1px solid var(--border);}
-.popup-item-text{font-size:13px;color:var(--text);}
+.popup-item-text{font-size:13px;}
 .popup-note{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-top:3px;}
+.popup-photos{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;}
+.popup-photos img{width:56px;height:56px;border-radius:6px;object-fit:cover;cursor:pointer;}
 .popup-empty{font-size:13px;color:var(--muted);text-align:center;padding:20px 0;}
 
-/* ── CELEBRATE ── */
+/* CELEBRATE */
 .celebrate{position:fixed;inset:0;background:rgba(15,14,12,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;opacity:0;pointer-events:none;transition:opacity .4s;}
 .celebrate.show{opacity:1;pointer-events:all;}
 .celebrate-emoji{font-size:72px;animation:bounce .6s ease infinite alternate;}
@@ -136,63 +166,71 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Serif SC',serif;mi
 @keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-12px)}}
 @keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.07)}100%{transform:scale(1)}}
 .task.just-done{animation:pop .3s ease;}
-
-/* particle */
 .particle{position:fixed;width:6px;height:6px;border-radius:50%;pointer-events:none;z-index:998;animation:fall 1.2s ease forwards;}
 @keyframes fall{0%{opacity:1;transform:translateY(0) rotate(0deg)}100%{opacity:0;transform:translateY(200px) rotate(360deg)}}
-
-/* all-done banner */
 .all-done-banner{margin:14px;background:linear-gradient(135deg,#1a2a1a,#1e2e1e);border:1px solid var(--done-border);border-radius:var(--radius);padding:16px;text-align:center;display:none;}
 .all-done-banner.show{display:block;}
 .all-done-banner .emoji{font-size:32px;}
 .all-done-banner p{color:var(--green);font-size:15px;margin-top:8px;}
 .all-done-banner small{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);display:block;margin-top:4px;}
-
-/* view toggle */
 .view-hidden{display:none!important;}
 </style>
 </head>
 <body>
 
+<div id="bgLayer"></div>
+
 <div class="tabs">
   <div class="tab active" id="tab-daily" onclick="switchTab('daily')">每日打卡</div>
   <div class="tab" id="tab-year" onclick="switchTab('year')">年度总览</div>
+  <div class="tab tab-icon" id="tab-settings" onclick="switchTab('settings')">⚙️</div>
 </div>
 
-<!-- ══ DAILY VIEW ══ -->
+<!-- DAILY -->
 <div id="dailyView">
   <div class="header">
     <div class="header-top">
-      <div>
-        <h1 id="headerTitle">今日 SOP</h1>
-        <div class="date" id="dateStr"></div>
-      </div>
+      <div><h1 id="headerTitle">今日 SOP</h1><div class="date" id="dateStr"></div></div>
       <button class="reset-btn" onclick="resetDay()">重置</button>
     </div>
-    <!-- Week nav -->
     <div class="week-nav">
       <button class="week-nav-btn" onclick="shiftWeek(-1)">‹</button>
       <div class="week-days" id="weekDays"></div>
       <button class="week-nav-btn" onclick="shiftWeek(1)">›</button>
     </div>
     <div class="progress-wrap">
-      <div class="progress-row">
-        <span class="progress-label">进度</span>
-        <span class="progress-count" id="progressCount">0 / 0</span>
-      </div>
+      <div class="progress-row"><span class="progress-label">进度</span><span class="progress-count" id="progressCount">0/0</span></div>
       <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
     </div>
   </div>
   <div id="appContent"></div>
 </div>
 
-<!-- ══ YEAR VIEW ══ -->
+<!-- YEAR -->
 <div id="yearView" class="view-hidden">
   <div class="year-title">2026 全年打卡</div>
   <div id="yearGrid"></div>
 </div>
 
-<!-- Day detail popup -->
+<!-- SETTINGS -->
+<div id="settingsView" class="view-hidden">
+  <div class="settings-title">⚙️ 设置</div>
+  <div class="settings-card">
+    <div class="settings-label">🖼️ 背景图片</div>
+    <img id="bgPreview" class="bg-preview" src="" alt="背景预览">
+    <input type="file" id="bgFileInput" accept="image/*" style="display:none" onchange="handleBgUpload(this)">
+    <button class="btn-primary" onclick="document.getElementById('bgFileInput').click()">选择本地图片</button>
+    <div class="overlay-row">
+      <span>遮罩深度</span>
+      <input type="range" class="overlay-slider" id="overlaySlider" min="0" max="95" value="82" oninput="updateOverlay(this.value)">
+      <span id="overlayVal">82%</span>
+    </div>
+    <div class="settings-hint">图片仅保存在本地，不会上传到任何地方 · 遮罩越深文字越清晰</div>
+    <button class="btn-danger" onclick="removeBg()">移除背景图片</button>
+  </div>
+</div>
+
+<!-- Popups -->
 <div class="day-popup" id="dayPopup">
   <div class="popup-card">
     <button class="popup-close" onclick="closePopup()">×</button>
@@ -200,8 +238,9 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Serif SC',serif;mi
     <div id="popupContent"></div>
   </div>
 </div>
-
-<!-- Celebrate -->
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('show')">
+  <img id="lightboxImg" src="" alt="">
+</div>
 <div class="celebrate" id="celebrate">
   <div class="celebrate-emoji">🎉</div>
   <div class="celebrate-text">今天全部完成！</div>
@@ -210,416 +249,312 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Serif SC',serif;mi
 </div>
 
 <script>
-// ══ DATA ══
-const TASKS = [
-  // 早晨
-  {id:'wake',   block:'morning', name:'起床 · 洗漱',      time:'08:00',        color:'#d4a843'},
-  {id:'cat',    block:'morning', name:'给猫喂药',          time:'08:05',        color:'#d4a843', sub:'趁猫饿着最配合 🐱'},
-  {id:'bfast',  block:'morning', name:'做早饭 + 吃早饭',   time:'08:10–08:30',  color:'#4aada0', noteLabel:'今天吃了什么？', hasNote:true},
-  {id:'toilet', block:'morning', name:'拉屎 · 整理仪容',   time:'08:30–08:50',  color:'#6b6860'},
-  {id:'vacuum', block:'morning', name:'吸地',              time:'08:50–09:10',  color:'#4aada0', sub:'每天必做'},
-  {id:'mop',    block:'morning', name:'拖地',              time:'09:10–09:20',  color:'#4aada0', sub:'隔天做', alternate:true},
-  {id:'tidy',   block:'morning', name:'整理房间 · 准备工作',time:'09:20–09:30', color:'#6b6860'},
-  // 上午工作
-  {id:'work1',  block:'work_am', name:'专注工作',          time:'09:30–12:00',  color:'#6b9fd4', sub:'2.5h · 可用番茄钟', noteLabel:'今天上午做了什么？', hasNote:true},
-  // 午饭
-  {id:'lunch1', block:'lunch',   name:'做午饭',            time:'12:00–12:30',  color:'#6b6860', noteLabel:'中午吃了什么？', hasNote:true},
-  {id:'lunch2', block:'lunch',   name:'吃午饭 · 休息',     time:'12:30–13:30',  color:'#d4695a'},
-  // 下午工作
-  {id:'work2',  block:'work_pm', name:'专注工作',          time:'13:30–17:00',  color:'#6b9fd4', sub:'3.5h · 中间可短休 10min', noteLabel:'今天下午做了什么？', hasNote:true},
-  // 晚饭
-  {id:'dinner1',block:'dinner',  name:'做晚饭 + 吃晚饭',   time:'17:00–17:30',  color:'#d4695a', noteLabel:'晚上吃了什么？', hasNote:true},
-  // 运动
-  {id:'sport',  block:'sport',   name:'运动 1 小时',       time:'18:30–19:30',  color:'#6aaa6a', sub:'饭后 30min 再运动更好', noteLabel:'今天运动了什么？', hasNote:true},
-  // 晚间
-  {id:'buffer', block:'evening', name:'收拾 · 缓冲',       time:'19:30–20:00',  color:'#6b6860'},
-  {id:'work3',  block:'evening', name:'晚间工作',          time:'20:00–21:30',  color:'#6b9fd4', sub:'1.5h', noteLabel:'今天晚上做了什么？', hasNote:true},
-  {id:'shower', block:'evening', name:'洗澡 · 放松',       time:'21:30',        color:'#9b7fd4'},
-  {id:'sleep',  block:'evening', name:'上床睡觉',          time:'22:00',        color:'#9b7fd4', sub:'目标睡足 8h 🌙'},
+const TASKS=[
+  {id:'wake',   block:'morning',name:'起床 · 洗漱',        time:'08:00',       color:'#d4a843'},
+  {id:'cat',    block:'morning',name:'给猫喂药',            time:'08:05',       color:'#d4a843',sub:'趁猫饿着最配合 🐱'},
+  {id:'bfast',  block:'morning',name:'做早饭 + 吃早饭',     time:'08:10–08:30', color:'#4aada0',noteLabel:'早饭吃了什么？',hasNote:true,hasPhoto:true},
+  {id:'toilet', block:'morning',name:'拉屎 · 整理仪容',     time:'08:30–08:50', color:'#6b6860'},
+  {id:'vacuum', block:'morning',name:'吸地',                time:'08:50–09:10', color:'#4aada0',sub:'每天必做'},
+  {id:'mop',    block:'morning',name:'拖地',                time:'09:10–09:20', color:'#4aada0',sub:'隔天做',alternate:true},
+  {id:'tidy',   block:'morning',name:'整理房间 · 准备工作', time:'09:20–09:30', color:'#6b6860'},
+  {id:'work1',  block:'work_am',name:'专注工作',            time:'09:30–12:00', color:'#6b9fd4',sub:'2.5h · 可用番茄钟',noteLabel:'上午做了什么？',hasNote:true},
+  {id:'lunch1', block:'lunch',  name:'做午饭',              time:'12:00–12:30', color:'#6b6860',noteLabel:'中午吃了什么？',hasNote:true,hasPhoto:true},
+  {id:'lunch2', block:'lunch',  name:'吃午饭 · 休息',       time:'12:30–13:30', color:'#d4695a'},
+  {id:'work2',  block:'work_pm',name:'专注工作',            time:'13:30–17:00', color:'#6b9fd4',sub:'3.5h · 中间可短休 10min',noteLabel:'下午做了什么？',hasNote:true},
+  {id:'dinner1',block:'dinner', name:'做晚饭 + 吃晚饭',     time:'17:00–17:30', color:'#d4695a',noteLabel:'晚饭吃了什么？',hasNote:true,hasPhoto:true},
+  {id:'sport',  block:'sport',  name:'运动 1 小时',         time:'18:30–19:30', color:'#6aaa6a',sub:'饭后 30min 再运动更好',noteLabel:'今天运动了什么？',hasNote:true},
+  {id:'buffer', block:'evening',name:'收拾 · 缓冲',         time:'19:30–20:00', color:'#6b6860'},
+  {id:'work3',  block:'evening',name:'晚间工作',            time:'20:00–21:30', color:'#6b9fd4',sub:'1.5h',noteLabel:'晚上做了什么？',hasNote:true},
+  {id:'shower', block:'evening',name:'洗澡 · 放松',         time:'21:30',       color:'#9b7fd4'},
+  {id:'sleep',  block:'evening',name:'上床睡觉',            time:'22:00',       color:'#9b7fd4',sub:'目标睡足 8h 🌙'},
 ];
-
-const BLOCKS = {
-  morning: {label:'早晨',    time:'08:00–09:30', color:'#d4a843'},
-  work_am: {label:'上午工作',time:'09:30–12:00', color:'#6b9fd4'},
-  lunch:   {label:'午饭',    time:'12:00–13:30', color:'#d4695a'},
-  work_pm: {label:'下午工作',time:'13:30–17:00', color:'#6b9fd4'},
-  dinner:  {label:'晚饭',    time:'17:00–17:30', color:'#d4695a'},
-  sport:   {label:'运动',    time:'18:30–19:30', color:'#6aaa6a'},
-  evening: {label:'晚间',    time:'19:30–22:00', color:'#9b7fd4'},
+const BLOCKS={
+  morning:{label:'早晨',    time:'08:00–09:30',color:'#d4a843'},
+  work_am:{label:'上午工作',time:'09:30–12:00',color:'#6b9fd4'},
+  lunch:  {label:'午饭',    time:'12:00–13:30',color:'#d4695a'},
+  work_pm:{label:'下午工作',time:'13:30–17:00',color:'#6b9fd4'},
+  dinner: {label:'晚饭',    time:'17:00–17:30',color:'#d4695a'},
+  sport:  {label:'运动',    time:'18:30–19:30',color:'#6aaa6a'},
+  evening:{label:'晚间',    time:'19:30–22:00',color:'#9b7fd4'},
 };
 
-// ══ STATE ══
-let viewingDate = new Date(); // which date is shown
-let weekOffset = 0; // 0 = current week
+let viewingDate=new Date(),weekOffset=0;
 
-function dateKey(d) {
-  return `sop_${d.getFullYear()}_${String(d.getMonth()).padStart(2,'0')}_${String(d.getDate()).padStart(2,'0')}`;
-}
+function dateKey(d){return `sop_${d.getFullYear()}_${String(d.getMonth()).padStart(2,'0')}_${String(d.getDate()).padStart(2,'0')}`;}
+function isToday(d){const t=new Date();return d.getFullYear()===t.getFullYear()&&d.getMonth()===t.getMonth()&&d.getDate()===t.getDate();}
+function isFuture(d){const t=new Date();t.setHours(0,0,0,0);const dd=new Date(d);dd.setHours(0,0,0,0);return dd>t;}
+function loadDayData(d){try{return JSON.parse(localStorage.getItem(dateKey(d)))||{};}catch{return {};}}
+function saveDayData(d,data){localStorage.setItem(dateKey(d),JSON.stringify(data));}
+function getMopDay(d){return Math.floor((d-new Date(2024,0,1))/86400000)%2===0;}
+function effectiveTasks(d){return TASKS.filter(t=>t.id!=='mop'||getMopDay(d));}
 
-function todayKey() { return dateKey(new Date()); }
-
-function isToday(d) {
-  const t = new Date();
-  return d.getFullYear()===t.getFullYear() && d.getMonth()===t.getMonth() && d.getDate()===t.getDate();
-}
-
-function isFuture(d) {
-  const t = new Date(); t.setHours(0,0,0,0); d = new Date(d); d.setHours(0,0,0,0);
-  return d > t;
-}
-
-function loadDayData(d) {
-  try { return JSON.parse(localStorage.getItem(dateKey(d))) || {}; } catch { return {}; }
-}
-
-function saveDayData(d, data) {
-  localStorage.setItem(dateKey(d), JSON.stringify(data));
-}
-
-function getMopDay(d) {
-  const base = new Date(2024,0,1);
-  const diff = Math.floor((d - base) / 86400000);
-  return diff % 2 === 0;
-}
-
-function effectiveTasks(d) {
-  const isMop = getMopDay(d);
-  return TASKS.filter(t => t.id !== 'mop' || isMop);
-}
-
-// ══ TAB ══
-let currentTab = 'daily';
-function switchTab(tab) {
-  currentTab = tab;
-  document.getElementById('dailyView').classList.toggle('view-hidden', tab !== 'daily');
-  document.getElementById('yearView').classList.toggle('view-hidden', tab !== 'year');
-  document.getElementById('tab-daily').classList.toggle('active', tab === 'daily');
-  document.getElementById('tab-year').classList.toggle('active', tab === 'year');
-  if (tab === 'year') renderYear();
-}
-
-// ══ WEEK NAV ══
-function getWeekDates() {
-  const today = new Date();
-  // Monday-based week
-  const dow = (today.getDay() + 6) % 7; // 0=Mon
-  const monday = new Date(today);
-  monday.setDate(today.getDate() - dow + weekOffset * 7);
-  const dates = [];
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(monday);
-    d.setDate(monday.getDate() + i);
-    dates.push(d);
-  }
-  return dates;
-}
-
-function shiftWeek(dir) {
-  // can't go into future weeks beyond current
-  const newOffset = weekOffset + dir;
-  if (newOffset > 0) return;
-  weekOffset = newOffset;
-  renderWeekDays();
-  // if viewing date no longer in week, pick monday of new week or today
-  const dates = getWeekDates();
-  const inWeek = dates.some(d => dateKey(d) === dateKey(viewingDate));
-  if (!inWeek) {
-    viewingDate = isToday(dates[6]) || weekOffset === 0 ? new Date() : dates[0];
-  }
-  renderDailyView();
-}
-
-function selectDay(d) {
-  viewingDate = d;
-  renderWeekDays();
-  renderDailyView();
-}
-
-function renderWeekDays() {
-  const dates = getWeekDates();
-  const labels = ['一','二','三','四','五','六','日'];
-  let html = '';
-  dates.forEach((d, i) => {
-    const data = loadDayData(d);
-    const tasks = effectiveTasks(d);
-    const total = tasks.length;
-    const done = tasks.filter(t => data[t.id+'_done']).length;
-    const future = isFuture(d);
-    const selected = dateKey(d) === dateKey(viewingDate);
-
-    let dotClass = 'wd-dot';
-    let sym = d.getDate();
-    if (!future && total > 0) {
-      if (done === total) { dotClass += ' full'; sym = '✓'; }
-      else if (done > 0) dotClass += ' partial';
-    }
-
-    html += `<div class="week-day${selected?' selected':''}" onclick="selectDay(new Date(${d.getFullYear()},${d.getMonth()},${d.getDate()}))">
-      <div class="${dotClass}">${sym}</div>
-      <div class="wd-label">${labels[i]}</div>
-    </div>`;
+function switchTab(tab){
+  ['daily','year','settings'].forEach(v=>{
+    document.getElementById(v+'View').classList.toggle('view-hidden',tab!==v);
+    document.getElementById('tab-'+v).classList.toggle('active',tab===v);
   });
-  document.getElementById('weekDays').innerHTML = html;
+  if(tab==='year')renderYear();
 }
 
-// ══ DAILY RENDER ══
-function renderDailyView() {
-  const d = viewingDate;
-  const past = !isToday(d) && !isFuture(d);
-  const future = isFuture(d);
-  const readonly = past || future;
+function getWeekDates(){
+  const today=new Date(),dow=(today.getDay()+6)%7;
+  const mon=new Date(today);mon.setDate(today.getDate()-dow+weekOffset*7);
+  return Array.from({length:7},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d;});
+}
 
-  // header
-  const dayNames = ['周日','周一','周二','周三','周四','周五','周六'];
-  document.getElementById('dateStr').textContent =
-    `${d.getMonth()+1}月${d.getDate()}日 ${dayNames[d.getDay()]}${isToday(d)?' · 今天':''}`;
-  document.getElementById('headerTitle').textContent = future ? '未来' : past ? '历史记录' : '今日 SOP';
+function shiftWeek(dir){
+  if(weekOffset+dir>0)return;
+  weekOffset+=dir;
+  renderWeekDays();
+  const dates=getWeekDates();
+  if(!dates.some(d=>dateKey(d)===dateKey(viewingDate)))
+    viewingDate=weekOffset===0?new Date():dates[0];
+  renderDailyView();
+}
 
-  const data = loadDayData(d);
-  const tasks = effectiveTasks(d);
+function selectDay(d){viewingDate=d;renderWeekDays();renderDailyView();}
 
-  updateProgress(d, data, tasks);
+function renderWeekDays(){
+  const dates=getWeekDates(),labels=['一','二','三','四','五','六','日'];
+  document.getElementById('weekDays').innerHTML=dates.map((d,i)=>{
+    const data=loadDayData(d),tasks=effectiveTasks(d);
+    const done=tasks.filter(t=>data[t.id+'_done']).length,future=isFuture(d);
+    const sel=dateKey(d)===dateKey(viewingDate);
+    let cls='wd-dot',sym=d.getDate();
+    if(!future&&tasks.length){if(done===tasks.length){cls+=' full';sym='✓';}else if(done>0)cls+=' partial';}
+    return `<div class="week-day${sel?' selected':''}" onclick="selectDay(new Date(${d.getFullYear()},${d.getMonth()},${d.getDate()}))">
+      <div class="${cls}">${sym}</div><div class="wd-label">${labels[i]}</div></div>`;
+  }).join('');
+}
 
-  const container = document.getElementById('appContent');
-  let html = '';
-  let currentBlock = null;
+function renderDailyView(){
+  const d=viewingDate,past=!isToday(d)&&!isFuture(d),future=isFuture(d);
+  const dayNames=['周日','周一','周二','周三','周四','周五','周六'];
+  document.getElementById('dateStr').textContent=`${d.getMonth()+1}月${d.getDate()}日 ${dayNames[d.getDay()]}${isToday(d)?' · 今天':''}`;
+  document.getElementById('headerTitle').textContent=future?'计划预填':past?'历史记录':'今日 SOP';
 
-  tasks.forEach((t, idx) => {
-    if (t.block !== currentBlock) {
-      if (currentBlock !== null) html += '</div>';
-      currentBlock = t.block;
-      const b = BLOCKS[currentBlock];
-      html += `<div class="block">
-        <div class="block-header">
-          <div class="block-dot" style="background:${b.color}"></div>
-          <span class="block-title">${b.label}</span>
-          <span class="block-time">${b.time}</span>
-        </div>`;
+  const data=loadDayData(d),tasks=effectiveTasks(d);
+  updateProgress(data,tasks);
+
+  let html='',curBlock=null;
+  tasks.forEach(t=>{
+    if(t.block!==curBlock){
+      if(curBlock)html+='</div>';
+      curBlock=t.block;const b=BLOCKS[curBlock];
+      html+=`<div class="block"><div class="block-header">
+        <div class="block-dot" style="background:${b.color}"></div>
+        <span class="block-title">${b.label}</span>
+        <span class="block-time">${b.time}</span></div>`;
     }
+    const done=!!data[t.id+'_done'];
+    const noteVal=data[t.id+'_note']||'';
+    const photos=data[t.id+'_photos']||[];
+    const noteOpen=noteVal.length>0||photos.length>0;
+    const hasNote=!!t.hasNote,hasPhoto=!!t.hasPhoto;
 
-    const done = !!data[t.id+'_done'];
-    const noteVal = data[t.id+'_note'] || '';
-    const noteOpen = noteVal.length > 0; // show note area if has content
-    const hasNote = !!t.hasNote;
+    // Checkbox: disabled only on future days
+    // Notes/photos: always editable (past, today, future all OK)
+    const checkClick=future?'':'onclick="toggle(\''+t.id+'\')"';
 
-    html += `<div class="task-wrap">
-      <div class="task${done?' done':''}${readonly?' readonly':''}${hasNote?' has-note':''}" id="task_${t.id}"
-           style="--task-color:${t.color}" ${readonly?'':'onclick="toggle(\''+t.id+'\')"'}>
-        <div class="check">
-          <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
-            <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
+    html+=`<div class="task-wrap">
+      <div class="task${done?' done':''}${future?' readonly':''}${hasNote?' has-note':''}" id="task_${t.id}" style="--task-color:${t.color}" ${checkClick}>
+        <div class="check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none">
+          <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <div class="task-content">
           <div class="task-name">${t.name}</div>
           ${t.sub?`<div class="task-sub">${t.sub}</div>`:''}
         </div>
         <div class="task-time">${t.time}</div>
-        ${hasNote?`<button class="note-btn" onclick="event.stopPropagation();toggleNote('${t.id}')" title="记录备注">✏️</button>`:''}
+        ${hasNote?`<button class="note-btn" onclick="event.stopPropagation();toggleNote('${t.id}')">✏️</button>`:''}
       </div>
       ${hasNote?`<div class="note-area${noteOpen?' open':''}" id="note_${t.id}">
         <div class="note-tag">${t.noteLabel||'备注'}</div>
         <textarea id="notetext_${t.id}" placeholder="${t.noteLabel||'写点什么...'}"
-          ${readonly?'disabled':''}
-          onblur="saveNote('${t.id}')"
-          oninput="autoResize(this)"
-        >${noteVal}</textarea>
+          onblur="saveNote('${t.id}')" oninput="autoResize(this)">${noteVal}</textarea>
+        ${hasPhoto?`<div class="note-btn-row">
+          <button class="note-img-btn" onclick="triggerPhoto('${t.id}')">📷 添加照片</button>
+        </div>
+        <input type="file" id="photoinput_${t.id}" accept="image/*" style="display:none" onchange="handlePhoto('${t.id}',this)">
+        <div class="photo-grid" id="photogrid_${t.id}">${renderPhotos(t.id,photos)}</div>`:''}
       </div>`:''}
     </div>`;
   });
-
-  if (currentBlock) html += '</div>';
-
-  if (!future) {
-    html += `<div class="all-done-banner" id="allDoneBanner">
-      <div class="emoji">🏆</div>
-      <p>SOP 全部完成！</p>
-      <small>你真的很厉害 ✨</small>
-    </div>`;
-  }
-
-  container.innerHTML = html;
-
-  if (!future) {
-    const allDone = tasks.every(t => data[t.id+'_done']);
-    if (allDone) document.getElementById('allDoneBanner')?.classList.add('show');
-  }
+  if(curBlock)html+='</div>';
+  if(!future)html+=`<div class="all-done-banner" id="allDoneBanner"><div class="emoji">🏆</div><p>SOP 全部完成！</p><small>你真的很厉害 ✨</small></div>`;
+  document.getElementById('appContent').innerHTML=html;
+  if(!future&&tasks.every(t=>data[t.id+'_done']))document.getElementById('allDoneBanner')?.classList.add('show');
 }
 
-function toggle(id) {
-  if (isFuture(viewingDate)) return;
-  const data = loadDayData(viewingDate);
-  data[id+'_done'] = !data[id+'_done'];
-  saveDayData(viewingDate, data);
-
-  const tasks = effectiveTasks(viewingDate);
-  updateProgress(viewingDate, data, tasks);
-  renderDailyView();
-  renderWeekDays();
-
-  const el = document.getElementById('task_' + id);
-  if (el && data[id+'_done']) {
-    el.classList.add('just-done');
-    el.addEventListener('animationend', () => el.classList.remove('just-done'), {once:true});
-    spawnParticles(el);
-  }
-
-  if (isToday(viewingDate)) {
-    const allDone = tasks.every(t => data[t.id+'_done']);
-    if (allDone) setTimeout(() => showCelebration(tasks.length), 400);
-  }
+function renderPhotos(id,photos){
+  return photos.map((src,pi)=>`<div class="photo-thumb">
+    <img src="${src}" onclick="openLightbox('${src}')">
+    <button class="photo-del" onclick="deletePhoto('${id}',${pi})">×</button>
+  </div>`).join('');
 }
 
-function toggleNote(id) {
-  const area = document.getElementById('note_' + id);
-  if (area) {
-    area.classList.toggle('open');
-    if (area.classList.contains('open')) {
-      setTimeout(() => document.getElementById('notetext_'+id)?.focus(), 50);
+function toggle(id){
+  if(isFuture(viewingDate))return;
+  const data=loadDayData(viewingDate);
+  data[id+'_done']=!data[id+'_done'];
+  saveDayData(viewingDate,data);
+  const tasks=effectiveTasks(viewingDate);
+  updateProgress(data,tasks);
+  renderDailyView();renderWeekDays();
+  const el=document.getElementById('task_'+id);
+  if(el&&data[id+'_done']){el.classList.add('just-done');el.addEventListener('animationend',()=>el.classList.remove('just-done'),{once:true});spawnParticles(el);}
+  if(isToday(viewingDate)&&tasks.every(t=>data[t.id+'_done']))setTimeout(()=>showCelebration(tasks.length),400);
+}
+
+function toggleNote(id){
+  const a=document.getElementById('note_'+id);if(!a)return;
+  a.classList.toggle('open');
+  if(a.classList.contains('open'))setTimeout(()=>document.getElementById('notetext_'+id)?.focus(),50);
+}
+
+function saveNote(id){
+  const el=document.getElementById('notetext_'+id);if(!el)return;
+  const data=loadDayData(viewingDate);data[id+'_note']=el.value;saveDayData(viewingDate,data);
+}
+
+function autoResize(el){el.style.height='auto';el.style.height=el.scrollHeight+'px';}
+
+function triggerPhoto(id){document.getElementById('photoinput_'+id)?.click();}
+
+function handlePhoto(id,input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const data=loadDayData(viewingDate);
+    if(!data[id+'_photos'])data[id+'_photos']=[];
+    if(data[id+'_photos'].length>=6){alert('最多保存6张照片');return;}
+    data[id+'_photos'].push(e.target.result);
+    saveDayData(viewingDate,data);
+    const grid=document.getElementById('photogrid_'+id);
+    if(grid)grid.innerHTML=renderPhotos(id,data[id+'_photos']);
+  };
+  reader.readAsDataURL(file);input.value='';
+}
+
+function deletePhoto(id,pi){
+  const data=loadDayData(viewingDate);
+  if(!data[id+'_photos'])return;
+  data[id+'_photos'].splice(pi,1);
+  saveDayData(viewingDate,data);
+  const grid=document.getElementById('photogrid_'+id);
+  if(grid)grid.innerHTML=renderPhotos(id,data[id+'_photos']);
+}
+
+function openLightbox(src){
+  document.getElementById('lightboxImg').src=src;
+  document.getElementById('lightbox').classList.add('show');
+}
+
+function updateProgress(data,tasks){
+  const total=tasks.length,done=tasks.filter(t=>data[t.id+'_done']).length;
+  document.getElementById('progressCount').textContent=`${done} / ${total}`;
+  document.getElementById('progressFill').style.width=`${total?done/total*100:0}%`;
+}
+
+function resetDay(){
+  if(!confirm('确定重置这天的打卡记录？'))return;
+  saveDayData(viewingDate,{});renderDailyView();renderWeekDays();
+}
+
+function spawnParticles(el){
+  const r=el.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+  ['#d4a843','#4aada0','#6aaa6a','#9b7fd4','#d4695a'].forEach((c,i)=>{
+    const p=document.createElement('div');p.className='particle';
+    p.style.cssText=`left:${cx+(Math.random()-.5)*60}px;top:${cy}px;background:${c};animation-delay:${i*.05}s`;
+    document.body.appendChild(p);setTimeout(()=>p.remove(),1400);
+  });
+}
+
+function showCelebration(count){
+  document.getElementById('celebrate').classList.add('show');
+  document.getElementById('celebrateSub').textContent=`完成 ${count} 项 · 今天辛苦了 ✨`;
+}
+
+function renderYear(){
+  const year=2026,months=['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'],wds=['一','二','三','四','五','六','日'];
+  let html='<div class="months-grid">';
+  for(let m=0;m<12;m++){
+    html+=`<div><div class="month-name">${year} · ${months[m]}</div>`;
+    html+=`<div class="weekday-headers">${wds.map(l=>`<div class="weekday-hd">${l}</div>`).join('')}</div><div class="days-grid">`;
+    const startDow=(new Date(year,m,1).getDay()+6)%7,daysIn=new Date(year,m+1,0).getDate();
+    for(let e=0;e<startDow;e++)html+=`<div class="day-cell empty"></div>`;
+    for(let day=1;day<=daysIn;day++){
+      const d=new Date(year,m,day),data=loadDayData(d),tasks=effectiveTasks(d);
+      const done=tasks.filter(t=>data[t.id+'_done']).length,future=isFuture(d),today=isToday(d);
+      let cls='day-cell';
+      if(future)cls+=' future';
+      else if(today)cls+=' today';
+      else if(done===tasks.length&&tasks.length>0)cls+=' full';
+      else if(done>0)cls+=' partial';
+      html+=`<div class="${cls}" ${!future?`onclick="openDayPopup(${year},${m},${day})"`:''}>${day}</div>`;
     }
+    html+=`</div></div>`;
   }
+  document.getElementById('yearGrid').innerHTML=html+'</div>';
 }
 
-function saveNote(id) {
-  const el = document.getElementById('notetext_' + id);
-  if (!el) return;
-  const data = loadDayData(viewingDate);
-  data[id+'_note'] = el.value;
-  saveDayData(viewingDate, data);
-}
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = el.scrollHeight + 'px';
-}
-
-function updateProgress(d, data, tasks) {
-  const total = tasks.length;
-  const done = tasks.filter(t => data[t.id+'_done']).length;
-  document.getElementById('progressCount').textContent = `${done} / ${total}`;
-  document.getElementById('progressFill').style.width = `${total?((done/total)*100):0}%`;
-}
-
-function resetDay() {
-  if (isFuture(viewingDate)) return;
-  if (!confirm('确定重置这天的打卡记录？')) return;
-  saveDayData(viewingDate, {});
-  renderDailyView();
-  renderWeekDays();
-}
-
-// ══ PARTICLES ══
-function spawnParticles(el) {
-  const rect = el.getBoundingClientRect();
-  const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
-  const colors = ['#d4a843','#4aada0','#6aaa6a','#9b7fd4','#d4695a'];
-  for (let i=0;i<8;i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.style.cssText = `left:${cx+(Math.random()-.5)*60}px;top:${cy}px;background:${colors[i%colors.length]};animation-delay:${i*.05}s`;
-    document.body.appendChild(p);
-    setTimeout(()=>p.remove(),1400);
-  }
-}
-
-// ══ CELEBRATE ══
-function showCelebration(count) {
-  const el = document.getElementById('celebrate');
-  el.classList.add('show');
-  document.getElementById('celebrateSub').textContent = `完成 ${count} 项 · 今天辛苦了 ✨`;
-}
-
-// ══ YEAR VIEW ══
-function renderYear() {
-  const container = document.getElementById('yearGrid');
-  const year = 2026;
-  const today = new Date();
-  const monthNames = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
-  const wdLabels = ['一','二','三','四','五','六','日'];
-
-  let html = `<div class="months-grid">`;
-
-  for (let m = 0; m < 12; m++) {
-    html += `<div class="month-block"><div class="month-name">${year} · ${monthNames[m]}</div>`;
-    html += `<div class="weekday-headers">${wdLabels.map(l=>`<div class="weekday-hd">${l}</div>`).join('')}</div>`;
-    html += `<div class="days-grid">`;
-
-    const firstDay = new Date(year, m, 1);
-    const startDow = (firstDay.getDay() + 6) % 7; // Mon=0
-    const daysInMonth = new Date(year, m+1, 0).getDate();
-
-    for (let e = 0; e < startDow; e++) html += `<div class="day-cell empty"></div>`;
-
-    for (let day = 1; day <= daysInMonth; day++) {
-      const d = new Date(year, m, day);
-      const data = loadDayData(d);
-      const tasks = effectiveTasks(d);
-      const total = tasks.length;
-      const done = tasks.filter(t => data[t.id+'_done']).length;
-      const future = isFuture(d);
-      const todayCell = isToday(d);
-
-      let cls = 'day-cell';
-      if (future) cls += ' future';
-      else if (todayCell) cls += ' today';
-      else if (done === total && total > 0) cls += ' full';
-      else if (done > 0) cls += ' partial';
-
-      const clickable = !future;
-      html += `<div class="${cls}" ${clickable?`onclick="openDayPopup(${year},${m},${day})"`:''}>${day}</div>`;
-    }
-
-    html += `</div></div>`;
-  }
-
-  html += `</div>`;
-  container.innerHTML = html;
-}
-
-function openDayPopup(year, month, day) {
-  const d = new Date(year, month, day);
-  if (isFuture(d)) return;
-
-  const data = loadDayData(d);
-  const tasks = effectiveTasks(d);
-  const dayNames = ['周日','周一','周二','周三','周四','周五','周六'];
-
-  document.getElementById('popupDate').textContent =
-    `${year}年${month+1}月${day}日 ${dayNames[d.getDay()]}`;
-
-  const done = tasks.filter(t => data[t.id+'_done']).length;
-
-  if (done === 0) {
-    document.getElementById('popupContent').innerHTML =
-      `<div class="popup-empty">暂无打卡记录</div>`;
-  } else {
-    let html = '';
-    tasks.forEach(t => {
-      const isDone = !!data[t.id+'_done'];
-      const note = data[t.id+'_note'] || '';
-      html += `<div class="popup-item">
+function openDayPopup(year,month,day){
+  const d=new Date(year,month,day);if(isFuture(d))return;
+  const data=loadDayData(d),tasks=effectiveTasks(d);
+  const dayNames=['周日','周一','周二','周三','周四','周五','周六'];
+  document.getElementById('popupDate').textContent=`${year}年${month+1}月${day}日 ${dayNames[d.getDay()]}`;
+  const done=tasks.filter(t=>data[t.id+'_done']).length;
+  if(!done){document.getElementById('popupContent').innerHTML=`<div class="popup-empty">暂无打卡记录</div>`;}
+  else{
+    document.getElementById('popupContent').innerHTML=tasks.map(t=>{
+      const isDone=!!data[t.id+'_done'],note=data[t.id+'_note']||'',photos=data[t.id+'_photos']||[];
+      return `<div class="popup-item">
         <div class="popup-check${isDone?'':' no'}">${isDone?`<svg width="10" height="8" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div>
-        <div>
-          <div class="popup-item-text" style="color:${isDone?'var(--text)':'var(--muted)'}">${t.name}</div>
-          ${note?`<div class="popup-note">${note}</div>`:''}
-        </div>
-      </div>`;
-    });
-    document.getElementById('popupContent').innerHTML = html;
+        <div><div class="popup-item-text" style="color:${isDone?'var(--text)':'var(--muted)'}">${t.name}</div>
+        ${note?`<div class="popup-note">${note}</div>`:''}
+        ${photos.length?`<div class="popup-photos">${photos.map(src=>`<img src="${src}" onclick="openLightbox('${src}')">`).join('')}</div>`:''}
+        </div></div>`;
+    }).join('');
   }
-
   document.getElementById('dayPopup').classList.add('show');
 }
+function closePopup(){document.getElementById('dayPopup').classList.remove('show');}
+document.getElementById('dayPopup').addEventListener('click',function(e){if(e.target===this)closePopup();});
 
-function closePopup() {
-  document.getElementById('dayPopup').classList.remove('show');
+// BACKGROUND
+function handleBgUpload(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    localStorage.setItem('sop_bg',e.target.result);
+    applyBg(e.target.result);
+    const p=document.getElementById('bgPreview');p.src=e.target.result;p.classList.add('show');
+  };
+  reader.readAsDataURL(file);input.value='';
 }
-document.getElementById('dayPopup').addEventListener('click', function(e){
-  if (e.target === this) closePopup();
-});
+function applyBg(src){
+  const layer=document.getElementById('bgLayer');
+  if(src){layer.style.backgroundImage=`url(${src})`;document.body.classList.add('has-bg');}
+  else{layer.style.backgroundImage='';document.body.classList.remove('has-bg');}
+}
+function updateOverlay(val){
+  document.getElementById('overlayVal').textContent=val+'%';
+  document.documentElement.style.setProperty('--bg-overlay',`rgba(15,14,12,${(val/100).toFixed(2)})`);
+  localStorage.setItem('sop_overlay',val);
+}
+function removeBg(){
+  localStorage.removeItem('sop_bg');applyBg(null);
+  const p=document.getElementById('bgPreview');p.src='';p.classList.remove('show');
+}
+function initBg(){
+  const saved=localStorage.getItem('sop_bg');
+  if(saved){applyBg(saved);const p=document.getElementById('bgPreview');p.src=saved;p.classList.add('show');}
+  const ov=localStorage.getItem('sop_overlay')||'82';
+  document.getElementById('overlaySlider').value=ov;updateOverlay(ov);
+}
 
-// ══ INIT ══
-viewingDate = new Date();
+// INIT
+initBg();
+viewingDate=new Date();
 renderWeekDays();
 renderDailyView();
 </script>
