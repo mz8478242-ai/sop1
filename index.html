@@ -41,11 +41,11 @@ body.has-bg .popup-card{background:rgba(26,25,22,0.96);}
 .reset-btn:active,.today-btn:active{background:var(--border);}
 .today-btn{color:var(--amber);border-color:var(--amber-dim);}
 
-/* WEEK NAV — scrollable strip */
-.week-strip-wrap{position:relative;overflow:hidden;padding:10px 36px 0;}
+/* DATE STRIP */
+.week-strip-wrap{position:relative;overflow:hidden;padding:10px 32px 0;}
 .week-strip{display:flex;gap:4px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
 .week-strip::-webkit-scrollbar{display:none;}
-.week-day{flex-shrink:0;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 5px;border-radius:8px;transition:background .15s;min-width:40px;}
+.week-day{flex-shrink:0;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 5px;border-radius:8px;min-width:40px;}
 .week-day.selected .wd-dot{border-color:var(--amber);border-width:2px;}
 .week-day.selected .wd-label{color:var(--amber);}
 .wd-dot{width:32px;height:32px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .3s;}
@@ -53,10 +53,10 @@ body.has-bg .popup-card{background:rgba(26,25,22,0.96);}
 .wd-dot.partial{background:var(--amber-dim);border-color:var(--amber-dim);}
 .wd-dot.today-ring{border-color:var(--amber);border-width:2px;}
 .wd-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);}
-.strip-arrow{position:absolute;top:50%;transform:translateY(-30%);background:none;border:1px solid var(--border);color:var(--muted);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;z-index:2;}
+.strip-arrow{position:absolute;top:50%;transform:translateY(-30%);background:none;border:1px solid var(--border);color:var(--muted);width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;z-index:2;}
 .strip-arrow:active{background:var(--border);}
-.strip-arrow.left{left:4px;}
-.strip-arrow.right{right:4px;}
+.strip-arrow.left{left:2px;}
+.strip-arrow.right{right:2px;}
 
 /* PROGRESS */
 .progress-wrap{margin-top:8px;}
@@ -66,35 +66,37 @@ body.has-bg .popup-card{background:rgba(26,25,22,0.96);}
 .progress-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--amber-dim),var(--amber));border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1);}
 
-/* BLOCKS */
-.block{margin:12px 12px 0;}
-.block-header{display:flex;align-items:center;gap:8px;margin-bottom:7px;padding:0 4px;}
-.block-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.block-title{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
-.block-time{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-left:auto;}
+/* SECTION HEADER */
+.section-header{display:flex;align-items:center;gap:8px;margin:14px 16px 6px;padding:0 2px;}
+.section-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.section-title{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+
+/* TASK LIST */
+.task-list{margin:0 12px;}
 
 /* TASK */
 .task-wrap{margin-bottom:7px;}
-.task{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 13px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);user-select:none;-webkit-user-select:none;position:relative;overflow:hidden;}
+.task{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:13px 13px;display:flex;align-items:center;gap:10px;transition:all .2s;user-select:none;-webkit-user-select:none;position:relative;overflow:hidden;}
 .task::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;background:var(--task-color,var(--border));transition:background .3s;}
-.task:active{transform:scale(.98);}
-.task.done{background:var(--done-bg);border-color:var(--done-border);opacity:.7;}
+.task.done{background:var(--done-bg);border-color:var(--done-border);opacity:.65;}
 .task.done::before{background:var(--green);}
-.task.readonly{cursor:default;}
-.task.readonly:active{transform:none;}
 .task.has-note{border-radius:var(--radius) var(--radius) 0 0;}
-.check{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s cubic-bezier(.4,0,.2,1);background:var(--surface2);}
+/* drag states */
+.task-wrap.dragging{opacity:.4;}
+.task-wrap.drag-over .task{border-color:var(--amber);border-style:dashed;}
+
+.drag-handle{font-size:16px;color:var(--muted);cursor:grab;flex-shrink:0;padding:0 2px;touch-action:none;}
+.drag-handle:active{cursor:grabbing;}
+.check{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s cubic-bezier(.4,0,.2,1);background:var(--surface2);cursor:pointer;}
 .task.done .check{background:var(--green);border-color:var(--green);}
 .check svg{opacity:0;transform:scale(.5);transition:all .25s cubic-bezier(.4,0,.2,1);}
 .task.done .check svg{opacity:1;transform:scale(1);}
-.task-content{flex:1;min-width:0;}
+.task-content{flex:1;min-width:0;cursor:default;}
 .task-name{font-size:14px;color:var(--text);transition:color .3s;}
 .task.done .task-name{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--done-border);}
 .task-sub{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-top:2px;}
-.task-time{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);flex-shrink:0;}
-.task.done .task-time{opacity:.5;}
-.task-actions{display:flex;gap:2px;flex-shrink:0;}
-.note-btn,.del-btn{background:none;border:none;font-size:14px;cursor:pointer;padding:2px;opacity:.6;transition:opacity .2s;}
+.task-actions{display:flex;gap:3px;flex-shrink:0;}
+.note-btn,.del-btn{background:none;border:none;font-size:14px;cursor:pointer;padding:2px;opacity:.55;transition:opacity .2s;}
 .note-btn:active,.del-btn:active{opacity:1;}
 .del-btn{color:var(--coral);}
 
@@ -113,25 +115,23 @@ body.has-bg .popup-card{background:rgba(26,25,22,0.96);}
 .photo-del{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.65);border:none;color:#fff;width:20px;height:20px;border-radius:50%;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 
 /* ADD TASK BUTTON */
-.add-task-btn{margin:10px 12px 0;background:none;border:1px dashed var(--border);color:var(--muted);font-family:'Noto Serif SC',serif;font-size:13px;padding:11px;border-radius:var(--radius);cursor:pointer;width:calc(100% - 24px);text-align:center;transition:all .2s;}
+.add-task-btn{margin:10px 12px 0;background:none;border:1px dashed var(--border);color:var(--muted);font-family:'Noto Serif SC',serif;font-size:13px;padding:11px;border-radius:var(--radius);cursor:pointer;width:calc(100% - 24px);text-align:center;display:block;transition:all .2s;}
 .add-task-btn:active{background:var(--surface);}
 
 /* ADD TASK MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(15,14,12,.88);z-index:600;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;}
 .modal-overlay.show{opacity:1;pointer-events:all;}
-.modal-sheet{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:20px 20px 36px;transform:translateY(20px);transition:transform .25s;}
+.modal-sheet{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:20px 20px 40px;transform:translateY(20px);transition:transform .25s;}
 .modal-overlay.show .modal-sheet{transform:translateY(0);}
 .modal-title{font-size:15px;font-weight:600;color:var(--amber);margin-bottom:16px;}
 .modal-close{float:right;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;margin-top:-4px;}
 .field-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em;}
 .field-input{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Noto Serif SC',serif;font-size:14px;padding:10px 12px;border-radius:10px;outline:none;margin-bottom:12px;}
 .field-input:focus{border-color:var(--amber-dim);}
-.field-row{display:flex;gap:10px;}
-.field-row .field-wrap{flex:1;}
-.color-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.color-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
 .color-chip{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s;}
 .color-chip.selected{border-color:var(--text);transform:scale(1.2);}
-.toggle-row{display:flex;gap:8px;margin-bottom:14px;}
+.toggle-row{display:flex;gap:8px;margin-bottom:16px;}
 .toggle-chip{padding:6px 12px;border-radius:20px;border:1px solid var(--border);font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s;}
 .toggle-chip.on{background:var(--amber-dim);border-color:var(--amber);color:var(--amber);}
 .btn-save{background:var(--amber);color:#0f0e0c;border:none;font-family:'Noto Serif SC',serif;font-size:14px;font-weight:600;padding:12px;border-radius:20px;cursor:pointer;width:100%;}
@@ -228,7 +228,6 @@ body.has-bg .popup-card{background:rgba(26,25,22,0.96);}
         <button class="reset-btn" onclick="resetDay()">重置</button>
       </div>
     </div>
-    <!-- Scrollable date strip: 2 weeks back + 2 weeks forward = 4 weeks total -->
     <div class="week-strip-wrap">
       <button class="strip-arrow left" onclick="scrollStrip(-1)">‹</button>
       <div class="week-strip" id="weekStrip"></div>
@@ -240,7 +239,7 @@ body.has-bg .popup-card{background:rgba(26,25,22,0.96);}
     </div>
   </div>
   <div id="appContent"></div>
-  <button class="add-task-btn" onclick="openAddModal()">＋ 添加自定义任务</button>
+  <button class="add-task-btn" onclick="openAddModal()">＋ 给今天添加任务</button>
 </div>
 
 <!-- YEAR -->
@@ -271,36 +270,23 @@ body.has-bg .popup-card{background:rgba(26,25,22,0.96);}
 <div class="modal-overlay" id="addModal">
   <div class="modal-sheet">
     <button class="modal-close" onclick="closeAddModal()">×</button>
-    <div class="modal-title">添加任务</div>
-
+    <div class="modal-title">给今天添加任务</div>
     <div class="field-label">任务名称</div>
     <input class="field-input" id="newTaskName" placeholder="例：喝水 2L、冥想 10 分钟">
-
-    <div class="field-row">
-      <div class="field-wrap">
-        <div class="field-label">开始时间</div>
-        <input class="field-input" id="newTaskTimeStart" placeholder="09:00" type="time">
-      </div>
-      <div class="field-wrap">
-        <div class="field-label">结束时间（可选）</div>
-        <input class="field-input" id="newTaskTimeEnd" placeholder="09:30" type="time">
-      </div>
-    </div>
-
-    <div class="field-label">颜色标签</div>
+    <div class="field-label">备注提示（可选）</div>
+    <input class="field-input" id="newTaskHint" placeholder="例：今天喝了多少水？">
+    <div class="field-label">颜色</div>
     <div class="color-row" id="colorRow"></div>
-
     <div class="field-label">功能</div>
     <div class="toggle-row">
       <div class="toggle-chip" id="toggleNote" onclick="toggleChip('toggleNote')">✏️ 备注</div>
       <div class="toggle-chip" id="togglePhoto" onclick="toggleChip('togglePhoto')">📷 照片</div>
     </div>
-
-    <button class="btn-save" onclick="saveNewTask()">保存任务</button>
+    <button class="btn-save" onclick="saveNewTask()">保存</button>
   </div>
 </div>
 
-<!-- Popups -->
+<!-- Day popup -->
 <div class="day-popup" id="dayPopup">
   <div class="popup-card">
     <button class="popup-close" onclick="closePopup()">×</button>
@@ -319,221 +305,169 @@ body.has-bg .popup-card{background:rgba(26,25,22,0.96);}
 </div>
 
 <script>
-// ══ DEFAULT TASKS ══
-const DEFAULT_TASKS=[
-  {id:'wake',   block:'morning',name:'起床 · 洗漱',        time:'08:00',       color:'#d4a843'},
-  {id:'cat',    block:'morning',name:'给猫喂药',            time:'08:05',       color:'#d4a843',sub:'趁猫饿着最配合 🐱'},
-  {id:'bfast',  block:'morning',name:'做早饭 + 吃早饭',     time:'08:10',       color:'#4aada0',timeEnd:'08:30',noteLabel:'早饭吃了什么？',hasNote:true,hasPhoto:true},
-  {id:'toilet', block:'morning',name:'拉屎 · 整理仪容',     time:'08:30',       color:'#6b6860',timeEnd:'08:50'},
-  {id:'vacuum', block:'morning',name:'吸地',                time:'08:50',       color:'#4aada0',timeEnd:'09:10',sub:'每天必做'},
-  {id:'mop',    block:'morning',name:'拖地',                time:'09:10',       color:'#4aada0',timeEnd:'09:20',sub:'隔天做',alternate:true},
-  {id:'tidy',   block:'morning',name:'整理房间 · 准备工作', time:'09:20',       color:'#6b6860',timeEnd:'09:30'},
-  {id:'work1',  block:'work_am',name:'专注工作',            time:'09:30',       color:'#6b9fd4',timeEnd:'12:00',sub:'2.5h · 可用番茄钟',noteLabel:'上午做了什么？',hasNote:true},
-  {id:'lunch1', block:'lunch',  name:'做午饭',              time:'12:00',       color:'#6b6860',timeEnd:'12:30',noteLabel:'中午吃了什么？',hasNote:true,hasPhoto:true},
-  {id:'lunch2', block:'lunch',  name:'吃午饭 · 休息',       time:'12:30',       color:'#d4695a',timeEnd:'13:30'},
-  {id:'work2',  block:'work_pm',name:'专注工作',            time:'13:30',       color:'#6b9fd4',timeEnd:'17:00',sub:'3.5h · 中间可短休 10min',noteLabel:'下午做了什么？',hasNote:true},
-  {id:'dinner1',block:'dinner', name:'做晚饭 + 吃晚饭',     time:'17:00',       color:'#d4695a',timeEnd:'17:30',noteLabel:'晚饭吃了什么？',hasNote:true,hasPhoto:true},
-  {id:'sport',  block:'sport',  name:'运动 1 小时',         time:'18:30',       color:'#6aaa6a',timeEnd:'19:30',sub:'饭后 30min 再运动更好',noteLabel:'今天运动了什么？',hasNote:true},
-  {id:'buffer', block:'evening',name:'收拾 · 缓冲',         time:'19:30',       color:'#6b6860',timeEnd:'20:00'},
-  {id:'work3',  block:'evening',name:'晚间工作',            time:'20:00',       color:'#6b9fd4',timeEnd:'21:30',sub:'1.5h',noteLabel:'晚上做了什么？',hasNote:true},
-  {id:'shower', block:'evening',name:'洗澡 · 放松',         time:'21:30',       color:'#9b7fd4'},
-  {id:'sleep',  block:'evening',name:'上床睡觉',            time:'22:00',       color:'#9b7fd4',sub:'目标睡足 8h 🌙'},
+// ══ DEFAULT TASKS (template, every day) ══
+const DEFAULT_TASKS = [
+  {id:'wake',   name:'起床 · 洗漱',        color:'#d4a843'},
+  {id:'cat',    name:'给猫喂药',            color:'#d4a843', sub:'趁猫饿着最配合 🐱'},
+  {id:'bfast',  name:'做早饭 + 吃早饭',     color:'#4aada0', noteLabel:'早饭吃了什么？', hasNote:true, hasPhoto:true},
+  {id:'toilet', name:'拉屎 · 整理仪容',     color:'#6b6860'},
+  {id:'vacuum', name:'吸地',                color:'#4aada0', sub:'每天必做'},
+  {id:'mop',    name:'拖地',                color:'#4aada0', sub:'隔天做', alternate:true},
+  {id:'tidy',   name:'整理房间 · 准备工作', color:'#6b6860'},
+  {id:'work1',  name:'专注工作（上午）',     color:'#6b9fd4', sub:'09:30–12:00', noteLabel:'上午做了什么？', hasNote:true},
+  {id:'lunch1', name:'做午饭',              color:'#6b6860', noteLabel:'中午吃了什么？', hasNote:true, hasPhoto:true},
+  {id:'lunch2', name:'吃午饭 · 休息',       color:'#d4695a'},
+  {id:'work2',  name:'专注工作（下午）',     color:'#6b9fd4', sub:'13:30–17:00', noteLabel:'下午做了什么？', hasNote:true},
+  {id:'dinner1',name:'做晚饭 + 吃晚饭',     color:'#d4695a', noteLabel:'晚饭吃了什么？', hasNote:true, hasPhoto:true},
+  {id:'sport',  name:'运动 1 小时',         color:'#6aaa6a', sub:'18:30–19:30', noteLabel:'今天运动了什么？', hasNote:true},
+  {id:'buffer', name:'收拾 · 缓冲',         color:'#6b6860'},
+  {id:'work3',  name:'晚间工作',            color:'#6b9fd4', sub:'20:00–21:30', noteLabel:'晚上做了什么？', hasNote:true},
+  {id:'shower', name:'洗澡 · 放松',         color:'#9b7fd4'},
+  {id:'sleep',  name:'上床睡觉',            color:'#9b7fd4', sub:'目标睡足 8h 🌙'},
 ];
 
-// ══ BLOCK DEFS ══
-const BLOCK_ORDER=['morning','work_am','lunch','work_pm','dinner','sport','evening'];
-const BLOCKS={
-  morning:{label:'早晨',    color:'#d4a843'},
-  work_am:{label:'上午工作',color:'#6b9fd4'},
-  lunch:  {label:'午饭',    color:'#d4695a'},
-  work_pm:{label:'下午工作',color:'#6b9fd4'},
-  dinner: {label:'晚饭',    color:'#d4695a'},
-  sport:  {label:'运动',    color:'#6aaa6a'},
-  evening:{label:'晚间',    color:'#9b7fd4'},
-};
-
-const COLORS=['#d4a843','#4aada0','#d4695a','#6aaa6a','#6b9fd4','#9b7fd4','#6b6860','#d4695a'];
-
-// ══ CUSTOM TASK STORAGE ══
-function loadCustomTasks(){try{return JSON.parse(localStorage.getItem('sop_custom_tasks'))||[];}catch{return [];}}
-function saveCustomTasks(arr){localStorage.setItem('sop_custom_tasks',JSON.stringify(arr));}
-
-function getAllTasks(){
-  const custom=loadCustomTasks();
-  return [...DEFAULT_TASKS,...custom].sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
-}
-
-function timeToMin(t){
-  if(!t)return 0;
-  const [h,m]=(t||'00:00').split(':').map(Number);
-  return h*60+(m||0);
-}
-
-function formatTimeRange(t,te){
-  if(!te)return t;
-  return `${t}–${te}`;
-}
-
-// assign block by time
-function timeToBlock(t){
-  const m=timeToMin(t);
-  if(m<570)return'morning';      // <09:30
-  if(m<720)return'work_am';      // <12:00
-  if(m<810)return'lunch';        // <13:30
-  if(m<1020)return'work_pm';     // <17:00
-  if(m<1110)return'dinner';      // <18:30
-  if(m<1170)return'sport';       // <19:30
-  return'evening';
-}
+const COLORS = ['#d4a843','#4aada0','#d4695a','#6aaa6a','#6b9fd4','#9b7fd4','#6b6860'];
 
 // ══ HELPERS ══
-let viewingDate=new Date();
+let viewingDate = new Date();
 
-function dateKey(d){return`sop_${d.getFullYear()}_${String(d.getMonth()).padStart(2,'0')}_${String(d.getDate()).padStart(2,'0')}`;}
+function dateKey(d){return `sop_${d.getFullYear()}_${String(d.getMonth()).padStart(2,'0')}_${String(d.getDate()).padStart(2,'0')}`;}
 function isToday(d){const t=new Date();return d.getFullYear()===t.getFullYear()&&d.getMonth()===t.getMonth()&&d.getDate()===t.getDate();}
 function isFuture(d){const t=new Date();t.setHours(0,0,0,0);const dd=new Date(d);dd.setHours(0,0,0,0);return dd>t;}
-function loadDayData(d){try{return JSON.parse(localStorage.getItem(dateKey(d)))||{};}catch{return {};}}
-function saveDayData(d,data){localStorage.setItem(dateKey(d),JSON.stringify(data));}
 function getMopDay(d){return Math.floor((d-new Date(2024,0,1))/86400000)%2===0;}
 
-function effectiveTasks(d){
-  const all=getAllTasks();
-  return all.filter(t=>t.id!=='mop'||getMopDay(d));
+// Day data: { taskId_done, taskId_note, taskId_photos, _order:[], _custom:[] }
+function loadDayData(d){try{return JSON.parse(localStorage.getItem(dateKey(d)))||{};}catch{return {};}}
+function saveDayData(d,data){localStorage.setItem(dateKey(d),JSON.stringify(data));}
+
+// Get ordered task list for a day
+function getDayTasks(d){
+  const data = loadDayData(d);
+  const isMop = getMopDay(d);
+
+  // Base default tasks (filter mop)
+  let base = DEFAULT_TASKS.filter(t => t.id !== 'mop' || isMop);
+
+  // Per-day custom tasks
+  const custom = data._custom || [];
+
+  // All tasks combined
+  const all = [...base, ...custom];
+
+  // Apply saved order if exists
+  const order = data._order || [];
+  if(order.length > 0){
+    const map = {};
+    all.forEach(t => map[t.id] = t);
+    const ordered = order.map(id => map[id]).filter(Boolean);
+    // append any tasks not in order (newly added)
+    const inOrder = new Set(order);
+    all.forEach(t => { if(!inOrder.has(t.id)) ordered.push(t); });
+    return ordered;
+  }
+  return all;
 }
 
 // ══ TABS ══
 function switchTab(tab){
   ['daily','year','settings'].forEach(v=>{
-    document.getElementById(v+'View').classList.toggle('view-hidden',tab!==v);
-    document.getElementById('tab-'+v).classList.toggle('active',tab===v);
+    document.getElementById(v+'View').classList.toggle('view-hidden', tab!==v);
+    document.getElementById('tab-'+v).classList.toggle('active', tab===v);
   });
-  if(tab==='year')renderYear();
+  if(tab==='year') renderYear();
 }
 
-// ══ DATE STRIP (±2 weeks = 29 days centred on today) ══
+// ══ DATE STRIP ══
 function buildStrip(){
-  const today=new Date();
-  const labels=['日','一','二','三','四','五','六'];
-  const strip=document.getElementById('weekStrip');
-  strip.innerHTML='';
-  // -14 days to +14 days
-  for(let i=-14;i<=14;i++){
-    const d=new Date(today);d.setDate(today.getDate()+i);
-    const data=loadDayData(d);const tasks=effectiveTasks(d);
-    const done=tasks.filter(t=>data[t.id+'_done']).length;
-    const future=isFuture(d);const todayFlag=isToday(d);
-    const sel=dateKey(d)===dateKey(viewingDate);
-    let dotCls='wd-dot';let sym=d.getDate();
-    if(todayFlag)dotCls+=' today-ring';
-    if(!future&&tasks.length){if(done===tasks.length){dotCls+=' full';sym='✓';}else if(done>0)dotCls+=' partial';}
-    const el=document.createElement('div');
-    el.className='week-day'+(sel?' selected':'');
-    el.dataset.offset=i;
-    el.innerHTML=`<div class="${dotCls}">${sym}</div><div class="wd-label">${labels[d.getDay()]}</div>`;
-    el.addEventListener('click',()=>selectDay(new Date(d)));
+  const today = new Date();
+  const labels = ['日','一','二','三','四','五','六'];
+  const strip = document.getElementById('weekStrip');
+  strip.innerHTML = '';
+  for(let i=-14; i<=14; i++){
+    const d = new Date(today); d.setDate(today.getDate()+i);
+    const data = loadDayData(d);
+    const tasks = getDayTasks(d);
+    const done = tasks.filter(t=>data[t.id+'_done']).length;
+    const future = isFuture(d), todayFlag = isToday(d);
+    const sel = dateKey(d) === dateKey(viewingDate);
+    let dotCls = 'wd-dot'; let sym = d.getDate();
+    if(todayFlag) dotCls += ' today-ring';
+    if(!future && tasks.length){ if(done===tasks.length){dotCls+=' full';sym='✓';}else if(done>0)dotCls+=' partial'; }
+    const el = document.createElement('div');
+    el.className = 'week-day'+(sel?' selected':'');
+    el.innerHTML = `<div class="${dotCls}">${sym}</div><div class="wd-label">${labels[d.getDay()]}</div>`;
+    el.addEventListener('click', ()=>selectDay(new Date(d)));
     strip.appendChild(el);
   }
-  // scroll selected into view
-  setTimeout(()=>{
-    const sel=strip.querySelector('.selected');
-    if(sel)sel.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
-  },50);
+  setTimeout(()=>{ const sel=strip.querySelector('.selected'); if(sel)sel.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}); }, 50);
 }
 
-function scrollStrip(dir){
-  const strip=document.getElementById('weekStrip');
-  strip.scrollBy({left:dir*120,behavior:'smooth'});
-}
+function scrollStrip(dir){ document.getElementById('weekStrip').scrollBy({left:dir*120,behavior:'smooth'}); }
+function selectDay(d){ viewingDate=d; buildStrip(); renderDailyView(); }
+function goToday(){ viewingDate=new Date(); buildStrip(); renderDailyView(); }
 
-function selectDay(d){
-  viewingDate=d;
-  buildStrip();
-  renderDailyView();
-}
-
-function goToday(){
-  viewingDate=new Date();
-  buildStrip();
-  renderDailyView();
-}
-
-// ══ DAILY RENDER ══
+// ══ RENDER ══
 function renderDailyView(){
-  const d=viewingDate,past=!isToday(d)&&!isFuture(d),future=isFuture(d);
-  const dayNames=['周日','周一','周二','周三','周四','周五','周六'];
-  document.getElementById('dateStr').textContent=`${d.getMonth()+1}月${d.getDate()}日 ${dayNames[d.getDay()]}${isToday(d)?' · 今天':''}`;
-  document.getElementById('headerTitle').textContent=future?'计划预填':past?'历史记录':'今日 SOP';
+  const d = viewingDate;
+  const past = !isToday(d) && !isFuture(d);
+  const future = isFuture(d);
+  const dayNames = ['周日','周一','周二','周三','周四','周五','周六'];
+  document.getElementById('dateStr').textContent = `${d.getMonth()+1}月${d.getDate()}日 ${dayNames[d.getDay()]}${isToday(d)?' · 今天':''}`;
+  document.getElementById('headerTitle').textContent = future?'计划预填':past?'历史记录':'今日 SOP';
 
-  const data=loadDayData(d),tasks=effectiveTasks(d);
-  updateProgress(data,tasks);
+  const data = loadDayData(d);
+  const tasks = getDayTasks(d);
+  updateProgress(data, tasks);
 
-  // Group tasks by block
-  const grouped={};
+  let html = '<div class="task-list" id="taskList">';
   tasks.forEach(t=>{
-    const blk=t.block||timeToBlock(t.time);
-    if(!grouped[blk])grouped[blk]=[];
-    grouped[blk].push(t);
-  });
+    const done = !!data[t.id+'_done'];
+    const noteVal = data[t.id+'_note'] || '';
+    const photos = data[t.id+'_photos'] || [];
+    const noteOpen = noteVal.length>0 || photos.length>0;
+    const hasNote = !!t.hasNote, hasPhoto = !!t.hasPhoto;
+    const isCustom = !!(data._custom||[]).find(c=>c.id===t.id);
 
-  let html='';
-  BLOCK_ORDER.forEach(blk=>{
-    const list=grouped[blk];if(!list||!list.length)return;
-    const b=BLOCKS[blk];
-    // compute time range for block
-    const times=list.map(t=>t.time).filter(Boolean);
-    const ends=list.map(t=>t.timeEnd).filter(Boolean);
-    const blockStart=times.length?times.reduce((a,b)=>timeToMin(a)<timeToMin(b)?a:b):'';
-    const blockEnd=ends.length?ends.reduce((a,b)=>timeToMin(a)>timeToMin(b)?a:b):'';
-    const blockTimeStr=blockStart?(blockEnd?`${blockStart}–${blockEnd}`:blockStart):'';
-
-    html+=`<div class="block"><div class="block-header">
-      <div class="block-dot" style="background:${b.color}"></div>
-      <span class="block-title">${b.label}</span>
-      <span class="block-time">${blockTimeStr}</span></div>`;
-
-    list.forEach(t=>{
-      const done=!!data[t.id+'_done'];
-      const noteVal=data[t.id+'_note']||'';
-      const photos=data[t.id+'_photos']||[];
-      const noteOpen=noteVal.length>0||photos.length>0;
-      const hasNote=!!t.hasNote,hasPhoto=!!t.hasPhoto;
-      const isCustom=!DEFAULT_TASKS.find(dt=>dt.id===t.id);
-      const checkClick=future?'':'onclick="toggle(\''+t.id+'\')"';
-      const timeDisplay=formatTimeRange(t.time,t.timeEnd);
-
-      html+=`<div class="task-wrap">
-        <div class="task${done?' done':''}${future?' readonly':''}${hasNote?' has-note':''}" id="task_${t.id}"
-             style="--task-color:${t.color}" ${checkClick}>
-          <div class="check"><svg width="11" height="9" viewBox="0 0 12 10" fill="none">
-            <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div class="task-content">
-            <div class="task-name">${t.name}</div>
-            ${t.sub?`<div class="task-sub">${t.sub}</div>`:''}
-          </div>
-          <div class="task-time">${timeDisplay}</div>
-          <div class="task-actions">
-            ${hasNote?`<button class="note-btn" onclick="event.stopPropagation();toggleNote('${t.id}')">✏️</button>`:''}
-            ${isCustom?`<button class="del-btn" onclick="event.stopPropagation();deleteCustomTask('${t.id}')">🗑</button>`:''}
-          </div>
+    html += `<div class="task-wrap" draggable="true" data-id="${t.id}"
+      ondragstart="dragStart(event,'${t.id}')"
+      ondragover="dragOver(event,'${t.id}')"
+      ondrop="dragDrop(event,'${t.id}')"
+      ondragend="dragEnd()"
+      ontouchstart="touchStart(event,'${t.id}')"
+      ontouchmove="touchMove(event)"
+      ontouchend="touchEnd(event,'${t.id}')">
+      <div class="task${done?' done':''}${hasNote?' has-note':''}" id="task_${t.id}" style="--task-color:${t.color}">
+        <div class="drag-handle">⠿</div>
+        <div class="check" onclick="toggle('${t.id}')">
+          <svg width="11" height="9" viewBox="0 0 12 10" fill="none">
+            <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
-        ${hasNote?`<div class="note-area${noteOpen?' open':''}" id="note_${t.id}">
-          <div class="note-tag">${t.noteLabel||'备注'}</div>
-          <textarea id="notetext_${t.id}" placeholder="${t.noteLabel||'写点什么...'}"
-            onblur="saveNote('${t.id}')" oninput="autoResize(this)">${noteVal}</textarea>
-          ${hasPhoto?`<div class="note-btn-row">
-            <button class="note-img-btn" onclick="triggerPhoto('${t.id}')">📷 添加照片</button>
-          </div>
-          <input type="file" id="photoinput_${t.id}" accept="image/*" style="display:none" onchange="handlePhoto('${t.id}',this)">
-          <div class="photo-grid" id="photogrid_${t.id}">${renderPhotos(t.id,photos)}</div>`:''}
-        </div>`:''}
-      </div>`;
-    });
-    html+=`</div>`;
+        <div class="task-content">
+          <div class="task-name">${t.name}</div>
+          ${t.sub?`<div class="task-sub">${t.sub}</div>`:''}
+        </div>
+        <div class="task-actions">
+          ${hasNote?`<button class="note-btn" onclick="toggleNote('${t.id}')">✏️</button>`:''}
+          ${isCustom?`<button class="del-btn" onclick="deleteCustomTask('${t.id}')">🗑</button>`:''}
+        </div>
+      </div>
+      ${hasNote?`<div class="note-area${noteOpen?' open':''}" id="note_${t.id}">
+        <div class="note-tag">${t.noteLabel||'备注'}</div>
+        <textarea id="notetext_${t.id}" placeholder="${t.noteLabel||'写点什么...'}"
+          onblur="saveNote('${t.id}')" oninput="autoResize(this)">${noteVal}</textarea>
+        ${hasPhoto?`<div class="note-btn-row">
+          <button class="note-img-btn" onclick="triggerPhoto('${t.id}')">📷 添加照片</button>
+        </div>
+        <input type="file" id="photoinput_${t.id}" accept="image/*" style="display:none" onchange="handlePhoto('${t.id}',this)">
+        <div class="photo-grid" id="photogrid_${t.id}">${renderPhotos(t.id,photos)}</div>`:''}
+      </div>`:''}
+    </div>`;
   });
 
-  if(!future)html+=`<div class="all-done-banner" id="allDoneBanner"><div class="emoji">🏆</div><p>SOP 全部完成！</p><small>你真的很厉害 ✨</small></div>`;
-  document.getElementById('appContent').innerHTML=html;
-  if(!future&&tasks.every(t=>data[t.id+'_done']))document.getElementById('allDoneBanner')?.classList.add('show');
+  html += '</div>';
+  if(!future) html += `<div class="all-done-banner" id="allDoneBanner"><div class="emoji">🏆</div><p>SOP 全部完成！</p><small>你真的很厉害 ✨</small></div>`;
+  document.getElementById('appContent').innerHTML = html;
+  if(!future && tasks.every(t=>data[t.id+'_done'])) document.getElementById('allDoneBanner')?.classList.add('show');
 }
 
 function renderPhotos(id,photos){
@@ -543,144 +477,200 @@ function renderPhotos(id,photos){
   </div>`).join('');
 }
 
-// ══ TASK ACTIONS ══
+// ══ DRAG TO REORDER (desktop) ══
+let dragSrcId = null;
+
+function dragStart(e, id){
+  dragSrcId = id;
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(()=>document.querySelector(`[data-id="${id}"]`)?.classList.add('dragging'), 0);
+}
+function dragOver(e, id){
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  document.querySelectorAll('.task-wrap').forEach(el=>el.classList.remove('drag-over'));
+  if(id !== dragSrcId) document.querySelector(`[data-id="${id}"]`)?.classList.add('drag-over');
+}
+function dragDrop(e, targetId){
+  e.preventDefault();
+  if(dragSrcId && dragSrcId !== targetId) reorderTasks(dragSrcId, targetId);
+}
+function dragEnd(){
+  dragSrcId = null;
+  document.querySelectorAll('.task-wrap').forEach(el=>{ el.classList.remove('dragging'); el.classList.remove('drag-over'); });
+}
+
+// ══ TOUCH DRAG (mobile) ══
+let touchDragId = null, touchClone = null, touchOffsetY = 0;
+
+function touchStart(e, id){
+  const handle = e.target.closest('.drag-handle');
+  if(!handle) return;
+  touchDragId = id;
+  const wrap = document.querySelector(`[data-id="${id}"]`);
+  const rect = wrap.getBoundingClientRect();
+  touchOffsetY = e.touches[0].clientY - rect.top;
+  // create floating clone
+  touchClone = wrap.cloneNode(true);
+  touchClone.style.cssText = `position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;z-index:900;opacity:.85;pointer-events:none;transition:none;`;
+  document.body.appendChild(touchClone);
+  wrap.classList.add('dragging');
+  e.preventDefault();
+}
+
+function touchMove(e){
+  if(!touchDragId || !touchClone) return;
+  e.preventDefault();
+  const y = e.touches[0].clientY;
+  touchClone.style.top = (y - touchOffsetY) + 'px';
+  // highlight target
+  document.querySelectorAll('.task-wrap').forEach(el=>el.classList.remove('drag-over'));
+  const els = document.elementsFromPoint(e.touches[0].clientX, y);
+  const target = els.find(el=>el.classList.contains('task-wrap') && el.dataset.id !== touchDragId);
+  if(target) target.classList.add('drag-over');
+}
+
+function touchEnd(e, id){
+  if(!touchDragId) return;
+  if(touchClone){ touchClone.remove(); touchClone=null; }
+  document.querySelectorAll('.task-wrap').forEach(el=>{ el.classList.remove('dragging'); el.classList.remove('drag-over'); });
+  const y = e.changedTouches[0].clientY;
+  const els = document.elementsFromPoint(e.changedTouches[0].clientX, y);
+  const target = els.find(el=>el.classList.contains('task-wrap') && el.dataset.id !== touchDragId);
+  if(target) reorderTasks(touchDragId, target.dataset.id);
+  touchDragId = null;
+}
+
+function reorderTasks(fromId, toId){
+  const data = loadDayData(viewingDate);
+  const tasks = getDayTasks(viewingDate);
+  const order = tasks.map(t=>t.id);
+  const fi = order.indexOf(fromId), ti = order.indexOf(toId);
+  if(fi<0||ti<0) return;
+  order.splice(fi,1); order.splice(ti,0,fromId);
+  data._order = order;
+  saveDayData(viewingDate, data);
+  renderDailyView();
+}
+
+// ══ ACTIONS ══
 function toggle(id){
-  if(isFuture(viewingDate))return;
-  const data=loadDayData(viewingDate);
-  data[id+'_done']=!data[id+'_done'];
-  saveDayData(viewingDate,data);
-  const tasks=effectiveTasks(viewingDate);
-  updateProgress(data,tasks);
-  renderDailyView();buildStrip();
-  const el=document.getElementById('task_'+id);
-  if(el&&data[id+'_done']){el.classList.add('just-done');el.addEventListener('animationend',()=>el.classList.remove('just-done'),{once:true});spawnParticles(el);}
-  if(isToday(viewingDate)&&tasks.every(t=>data[t.id+'_done']))setTimeout(()=>showCelebration(tasks.length),400);
+  const data = loadDayData(viewingDate);
+  data[id+'_done'] = !data[id+'_done'];
+  saveDayData(viewingDate, data);
+  const tasks = getDayTasks(viewingDate);
+  updateProgress(data, tasks);
+  renderDailyView(); buildStrip();
+  const el = document.getElementById('task_'+id);
+  if(el && data[id+'_done']){ el.classList.add('just-done'); el.addEventListener('animationend',()=>el.classList.remove('just-done'),{once:true}); spawnParticles(el); }
+  if(isToday(viewingDate) && tasks.every(t=>data[t.id+'_done'])) setTimeout(()=>showCelebration(tasks.length),400);
 }
 
 function toggleNote(id){
-  const a=document.getElementById('note_'+id);if(!a)return;
+  const a = document.getElementById('note_'+id); if(!a) return;
   a.classList.toggle('open');
-  if(a.classList.contains('open'))setTimeout(()=>document.getElementById('notetext_'+id)?.focus(),50);
+  if(a.classList.contains('open')) setTimeout(()=>document.getElementById('notetext_'+id)?.focus(),50);
 }
-
 function saveNote(id){
-  const el=document.getElementById('notetext_'+id);if(!el)return;
-  const data=loadDayData(viewingDate);data[id+'_note']=el.value;saveDayData(viewingDate,data);
+  const el = document.getElementById('notetext_'+id); if(!el) return;
+  const data = loadDayData(viewingDate); data[id+'_note'] = el.value; saveDayData(viewingDate, data);
 }
-
-function autoResize(el){el.style.height='auto';el.style.height=el.scrollHeight+'px';}
-
-function triggerPhoto(id){document.getElementById('photoinput_'+id)?.click();}
-function handlePhoto(id,input){
-  const file=input.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const data=loadDayData(viewingDate);
-    if(!data[id+'_photos'])data[id+'_photos']=[];
-    if(data[id+'_photos'].length>=6){alert('最多6张');return;}
-    data[id+'_photos'].push(e.target.result);saveDayData(viewingDate,data);
-    const g=document.getElementById('photogrid_'+id);if(g)g.innerHTML=renderPhotos(id,data[id+'_photos']);
+function autoResize(el){ el.style.height='auto'; el.style.height=el.scrollHeight+'px'; }
+function triggerPhoto(id){ document.getElementById('photoinput_'+id)?.click(); }
+function handlePhoto(id, input){
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const data = loadDayData(viewingDate);
+    if(!data[id+'_photos']) data[id+'_photos'] = [];
+    if(data[id+'_photos'].length >= 6){ alert('最多6张'); return; }
+    data[id+'_photos'].push(e.target.result); saveDayData(viewingDate, data);
+    const g = document.getElementById('photogrid_'+id); if(g) g.innerHTML = renderPhotos(id, data[id+'_photos']);
   };
-  reader.readAsDataURL(file);input.value='';
+  reader.readAsDataURL(file); input.value='';
 }
-function deletePhoto(id,pi){
-  const data=loadDayData(viewingDate);
-  if(!data[id+'_photos'])return;
-  data[id+'_photos'].splice(pi,1);saveDayData(viewingDate,data);
-  const g=document.getElementById('photogrid_'+id);if(g)g.innerHTML=renderPhotos(id,data[id+'_photos']);
+function deletePhoto(id, pi){
+  const data = loadDayData(viewingDate);
+  if(!data[id+'_photos']) return;
+  data[id+'_photos'].splice(pi,1); saveDayData(viewingDate, data);
+  const g = document.getElementById('photogrid_'+id); if(g) g.innerHTML = renderPhotos(id, data[id+'_photos']);
 }
-function openLightbox(src){document.getElementById('lightboxImg').src=src;document.getElementById('lightbox').classList.add('show');}
+function openLightbox(src){ document.getElementById('lightboxImg').src=src; document.getElementById('lightbox').classList.add('show'); }
+function updateProgress(data, tasks){
+  const total=tasks.length, done=tasks.filter(t=>data[t.id+'_done']).length;
+  document.getElementById('progressCount').textContent = `${done} / ${total}`;
+  document.getElementById('progressFill').style.width = `${total?done/total*100:0}%`;
+}
+function resetDay(){
+  if(!confirm('确定重置这天的打卡记录？')) return;
+  saveDayData(viewingDate, {}); renderDailyView(); buildStrip();
+}
 
-function updateProgress(data,tasks){
-  const total=tasks.length,done=tasks.filter(t=>data[t.id+'_done']).length;
-  document.getElementById('progressCount').textContent=`${done} / ${total}`;
-  document.getElementById('progressFill').style.width=`${total?done/total*100:0}%`;
-}
-function resetDay(){if(!confirm('确定重置这天的打卡记录？'))return;saveDayData(viewingDate,{});renderDailyView();buildStrip();}
-
-// ══ ADD CUSTOM TASK ══
-let selectedColor=COLORS[0];
-let chipStates={toggleNote:false,togglePhoto:false};
+// ══ ADD CUSTOM TASK (per day) ══
+let selectedColor = COLORS[0];
+let chipStates = {toggleNote:false, togglePhoto:false};
 
 function openAddModal(){
-  // build color chips
-  const row=document.getElementById('colorRow');
-  row.innerHTML=COLORS.map((c,i)=>`<div class="color-chip${i===0?' selected':''}" style="background:${c}" onclick="pickColor('${c}',this)"></div>`).join('');
-  selectedColor=COLORS[0];
-  chipStates={toggleNote:false,togglePhoto:false};
+  document.getElementById('colorRow').innerHTML = COLORS.map((c,i)=>
+    `<div class="color-chip${i===0?' selected':''}" style="background:${c}" onclick="pickColor('${c}',this)"></div>`).join('');
+  selectedColor = COLORS[0];
+  chipStates = {toggleNote:false, togglePhoto:false};
   document.getElementById('toggleNote').classList.remove('on');
   document.getElementById('togglePhoto').classList.remove('on');
-  document.getElementById('newTaskName').value='';
-  document.getElementById('newTaskTimeStart').value='';
-  document.getElementById('newTaskTimeEnd').value='';
+  document.getElementById('newTaskName').value = '';
+  document.getElementById('newTaskHint').value = '';
   document.getElementById('addModal').classList.add('show');
-  setTimeout(()=>document.getElementById('newTaskName').focus(),100);
+  setTimeout(()=>document.getElementById('newTaskName').focus(), 100);
 }
-
-function closeAddModal(){document.getElementById('addModal').classList.remove('show');}
-
-function pickColor(c,el){
-  selectedColor=c;
+function closeAddModal(){ document.getElementById('addModal').classList.remove('show'); }
+function pickColor(c, el){
+  selectedColor = c;
   document.querySelectorAll('.color-chip').forEach(ch=>ch.classList.remove('selected'));
   el.classList.add('selected');
 }
-
 function toggleChip(id){
-  chipStates[id]=!chipStates[id];
-  document.getElementById(id).classList.toggle('on',chipStates[id]);
-  if(id==='togglePhoto'&&chipStates[id]){
-    chipStates['toggleNote']=true;
-    document.getElementById('toggleNote').classList.add('on');
-  }
+  chipStates[id] = !chipStates[id];
+  document.getElementById(id).classList.toggle('on', chipStates[id]);
+  if(id==='togglePhoto' && chipStates[id]){ chipStates['toggleNote']=true; document.getElementById('toggleNote').classList.add('on'); }
 }
-
 function saveNewTask(){
-  const name=document.getElementById('newTaskName').value.trim();
-  const timeStart=document.getElementById('newTaskTimeStart').value;
-  const timeEnd=document.getElementById('newTaskTimeEnd').value;
-  if(!name){alert('请填写任务名称');return;}
-  if(!timeStart){alert('请填写开始时间');return;}
-
-  const custom=loadCustomTasks();
-  const id='custom_'+Date.now();
-  const task={
-    id,
-    name,
-    time:timeStart,
-    timeEnd:timeEnd||'',
-    color:selectedColor,
-    hasNote:chipStates['toggleNote'],
-    hasPhoto:chipStates['togglePhoto'],
-    noteLabel:name,
-    isCustom:true,
-  };
-  if(task.hasNote)task.noteLabel=name;
-  custom.push(task);
-  saveCustomTasks(custom);
+  const name = document.getElementById('newTaskName').value.trim();
+  const hint = document.getElementById('newTaskHint').value.trim();
+  if(!name){ alert('请填写任务名称'); return; }
+  const data = loadDayData(viewingDate);
+  if(!data._custom) data._custom = [];
+  const id = 'custom_' + Date.now();
+  data._custom.push({
+    id, name, color:selectedColor,
+    hasNote: chipStates['toggleNote'],
+    hasPhoto: chipStates['togglePhoto'],
+    noteLabel: hint || name,
+  });
+  saveDayData(viewingDate, data);
   closeAddModal();
-  renderDailyView();
-  buildStrip();
+  renderDailyView(); buildStrip();
 }
-
 function deleteCustomTask(id){
-  if(!confirm('删除这个任务？'))return;
-  const custom=loadCustomTasks().filter(t=>t.id!==id);
-  saveCustomTasks(custom);
-  renderDailyView();buildStrip();
+  if(!confirm('删除这个任务？')) return;
+  const data = loadDayData(viewingDate);
+  data._custom = (data._custom||[]).filter(t=>t.id!==id);
+  if(data._order) data._order = data._order.filter(i=>i!==id);
+  saveDayData(viewingDate, data);
+  renderDailyView(); buildStrip();
 }
 
 // ══ PARTICLES / CELEBRATE ══
 function spawnParticles(el){
   const r=el.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
   ['#d4a843','#4aada0','#6aaa6a','#9b7fd4','#d4695a'].forEach((c,i)=>{
-    const p=document.createElement('div');p.className='particle';
+    const p=document.createElement('div'); p.className='particle';
     p.style.cssText=`left:${cx+(Math.random()-.5)*60}px;top:${cy}px;background:${c};animation-delay:${i*.05}s`;
-    document.body.appendChild(p);setTimeout(()=>p.remove(),1400);
+    document.body.appendChild(p); setTimeout(()=>p.remove(),1400);
   });
 }
 function showCelebration(count){
   document.getElementById('celebrate').classList.add('show');
-  document.getElementById('celebrateSub').textContent=`完成 ${count} 项 · 今天辛苦了 ✨`;
+  document.getElementById('celebrateSub').textContent = `完成 ${count} 项 · 今天辛苦了 ✨`;
 }
 
 // ══ YEAR VIEW ══
@@ -690,16 +680,15 @@ function renderYear(){
   for(let m=0;m<12;m++){
     html+=`<div><div class="month-name">${year} · ${months[m]}</div>`;
     html+=`<div class="weekday-headers">${wds.map(l=>`<div class="weekday-hd">${l}</div>`).join('')}</div><div class="days-grid">`;
-    const startDow=(new Date(year,m,1).getDay()+6)%7,daysIn=new Date(year,m+1,0).getDate();
-    for(let e=0;e<startDow;e++)html+=`<div class="day-cell empty"></div>`;
+    const startDow=(new Date(year,m,1).getDay()+6)%7, daysIn=new Date(year,m+1,0).getDate();
+    for(let e=0;e<startDow;e++) html+=`<div class="day-cell empty"></div>`;
     for(let day=1;day<=daysIn;day++){
-      const d=new Date(year,m,day),data=loadDayData(d),tasks=effectiveTasks(d);
-      const done=tasks.filter(t=>data[t.id+'_done']).length,future=isFuture(d),today=isToday(d);
+      const d=new Date(year,m,day), data=loadDayData(d), tasks=getDayTasks(d);
+      const done=tasks.filter(t=>data[t.id+'_done']).length, future=isFuture(d), today=isToday(d);
       let cls='day-cell';
-      if(future){}
-      else if(today)cls+=' today-cell';
-      else if(done===tasks.length&&tasks.length>0)cls+=' full';
-      else if(done>0)cls+=' partial';
+      if(today) cls+=' today-cell';
+      else if(!future && done===tasks.length && tasks.length>0) cls+=' full';
+      else if(!future && done>0) cls+=' partial';
       html+=`<div class="${cls}" onclick="openDayPopup(${year},${m},${day})">${day}</div>`;
     }
     html+=`</div></div>`;
@@ -708,16 +697,15 @@ function renderYear(){
 }
 
 function openDayPopup(year,month,day){
-  const d=new Date(year,month,day);
-  const data=loadDayData(d),tasks=effectiveTasks(d);
+  const d=new Date(year,month,day), data=loadDayData(d), tasks=getDayTasks(d);
   const dayNames=['周日','周一','周二','周三','周四','周五','周六'];
   document.getElementById('popupDate').textContent=`${year}年${month+1}月${day}日 ${dayNames[d.getDay()]}`;
   const done=tasks.filter(t=>data[t.id+'_done']).length;
-  if(!done){document.getElementById('popupContent').innerHTML=`<div class="popup-empty">暂无打卡记录</div>`;}
+  if(!done){ document.getElementById('popupContent').innerHTML=`<div class="popup-empty">暂无打卡记录</div>`; }
   else{
     document.getElementById('popupContent').innerHTML=tasks.map(t=>{
-      const isDone=!!data[t.id+'_done'],note=data[t.id+'_note']||'',photos=data[t.id+'_photos']||[];
-      return`<div class="popup-item">
+      const isDone=!!data[t.id+'_done'], note=data[t.id+'_note']||'', photos=data[t.id+'_photos']||[];
+      return `<div class="popup-item">
         <div class="popup-check${isDone?'':' no'}">${isDone?`<svg width="9" height="8" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div>
         <div><div class="popup-item-text" style="color:${isDone?'var(--text)':'var(--muted)'}">${t.name}</div>
         ${note?`<div class="popup-note">${note}</div>`:''}
@@ -727,19 +715,19 @@ function openDayPopup(year,month,day){
   }
   document.getElementById('dayPopup').classList.add('show');
 }
-function closePopup(){document.getElementById('dayPopup').classList.remove('show');}
+function closePopup(){ document.getElementById('dayPopup').classList.remove('show'); }
 document.getElementById('dayPopup').addEventListener('click',function(e){if(e.target===this)closePopup();});
 document.getElementById('addModal').addEventListener('click',function(e){if(e.target===this)closeAddModal();});
 
 // ══ BACKGROUND ══
 function handleBgUpload(input){
-  const file=input.files[0];if(!file)return;
+  const file=input.files[0]; if(!file) return;
   const reader=new FileReader();
   reader.onload=e=>{
-    localStorage.setItem('sop_bg',e.target.result);applyBg(e.target.result);
-    const p=document.getElementById('bgPreview');p.src=e.target.result;p.classList.add('show');
+    localStorage.setItem('sop_bg',e.target.result); applyBg(e.target.result);
+    const p=document.getElementById('bgPreview'); p.src=e.target.result; p.classList.add('show');
   };
-  reader.readAsDataURL(file);input.value='';
+  reader.readAsDataURL(file); input.value='';
 }
 function applyBg(src){
   const l=document.getElementById('bgLayer');
@@ -752,19 +740,19 @@ function updateOverlay(val){
   localStorage.setItem('sop_overlay',val);
 }
 function removeBg(){
-  localStorage.removeItem('sop_bg');applyBg(null);
-  const p=document.getElementById('bgPreview');p.src='';p.classList.remove('show');
+  localStorage.removeItem('sop_bg'); applyBg(null);
+  const p=document.getElementById('bgPreview'); p.src=''; p.classList.remove('show');
 }
 function initBg(){
   const saved=localStorage.getItem('sop_bg');
-  if(saved){applyBg(saved);const p=document.getElementById('bgPreview');p.src=saved;p.classList.add('show');}
+  if(saved){ applyBg(saved); const p=document.getElementById('bgPreview'); p.src=saved; p.classList.add('show'); }
   const ov=localStorage.getItem('sop_overlay')||'82';
-  document.getElementById('overlaySlider').value=ov;updateOverlay(ov);
+  document.getElementById('overlaySlider').value=ov; updateOverlay(ov);
 }
 
 // ══ INIT ══
 initBg();
-viewingDate=new Date();
+viewingDate = new Date();
 buildStrip();
 renderDailyView();
 </script>
